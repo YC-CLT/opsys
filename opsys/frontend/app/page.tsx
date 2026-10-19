@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import FakeTerminal from '@/components/FakeTerminal'
+import Terminal from '@/components/ui/Terminal'
 import { useModeDetect } from '@/hooks/useModeDetect'
 
 export default function Home() {
@@ -31,7 +31,7 @@ export default function Home() {
         transition={{ duration: 0.6, delay: 0.3 }}
         className="w-full max-w-md"
       >
-        <FakeTerminal />
+        <Terminal />
       </motion.div>
 
       {loading ? (

@@ -2,8 +2,8 @@
 
 import { Geist, Geist_Mono } from 'next/font/google'
 import RootProvider from '@/components/RootProvider'
-import KanbanMusume from '@/components/KanbanMusume'
-import SettingsPanel from '@/components/SettingsPanel'
+import Mascot from '@/components/ui/Mascot'
+import SettingsPanel from '@/components/ui/SettingsPanel'
 import './globals.css'
 
 const geistSans = Geist({
@@ -30,7 +30,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </div>
           <SettingsPanel />
-          <KanbanMusume />
+          <Mascot />
         </RootProvider>
       </body>
     </html>

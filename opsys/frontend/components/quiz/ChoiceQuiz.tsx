@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 
-interface ChoiceQuestionProps {
+interface ChoiceQuizProps {
   stem: string
   options: string[]
   onAnswer: (answer: string) => void
@@ -13,7 +13,7 @@ interface ChoiceQuestionProps {
 
 const LABELS = ['A', 'B', 'C', 'D', 'E', 'F']
 
-export default function ChoiceQuestion({ stem, options, onAnswer, disabled, selectedAnswer, correctAnswer }: ChoiceQuestionProps) {
+export default function ChoiceQuiz({ stem, options, onAnswer, disabled, selectedAnswer, correctAnswer }: ChoiceQuizProps) {
   const getOptionStyle = (index: number) => {
     const label = LABELS[index]
     if (!selectedAnswer) return 'border-zinc-600/40 bg-surface hover:bg-surface/70 hover:border-accent/40'

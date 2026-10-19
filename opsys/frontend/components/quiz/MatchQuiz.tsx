@@ -8,7 +8,7 @@ interface Pair {
   right: string
 }
 
-interface MatchQuestionProps {
+interface MatchQuizProps {
   stem: string
   pairs: Pair[]
   answer: Record<string, string>
@@ -26,7 +26,7 @@ function shuffle<T>(arr: T[]): T[] {
   return a
 }
 
-export default function MatchQuestion({ stem, pairs, answer, onAnswer, disabled, submittedAnswer }: MatchQuestionProps) {
+export default function MatchQuiz({ stem, pairs, answer, onAnswer, disabled, submittedAnswer }: MatchQuizProps) {
   const leftItems = useMemo(() => pairs.map(p => p.left), [pairs])
   const rightOptions = useMemo(() => shuffle(pairs.map(p => p.right)), [pairs])
 

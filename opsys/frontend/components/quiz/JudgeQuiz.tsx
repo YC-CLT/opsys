@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion'
 
-interface JudgeQuestionProps {
+interface JudgeQuizProps {
   stem: string
   onAnswer: (answer: boolean) => void
   disabled: boolean
@@ -10,7 +10,7 @@ interface JudgeQuestionProps {
   correctAnswer?: boolean
 }
 
-export default function JudgeQuestion({ stem, onAnswer, disabled, selectedAnswer, correctAnswer }: JudgeQuestionProps) {
+export default function JudgeQuiz({ stem, onAnswer, disabled, selectedAnswer, correctAnswer }: JudgeQuizProps) {
   const getButtonStyle = (value: boolean) => {
     if (selectedAnswer === undefined) return 'border-zinc-600/40 bg-surface hover:bg-surface/70 hover:border-accent/40'
     if (value === correctAnswer) return 'border-green-500/60 bg-green-500/10 text-green-300'
