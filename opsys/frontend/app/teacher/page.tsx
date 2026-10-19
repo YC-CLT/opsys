@@ -2,9 +2,13 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { AnimatePresence } from 'framer-motion'
 import { useAuth } from '@/hooks/useAuth'
 import { apiFetch } from '@/lib/api'
+import OverviewCards from '@/components/teacher/OverviewCards'
+import LevelSummary from '@/components/teacher/LevelSummary'
+import StudentList from '@/components/teacher/StudentList'
+import QuestionStats from '@/components/teacher/QuestionStats'
 
 interface StudentSummary {
   student_id: string
@@ -25,7 +29,7 @@ interface QuestionStat {
   accuracy: string
 }
 
-interface LevelSummary {
+interface LevelSummaryItem {
   levelId: number
   studentCount: number
   accuracy: string
@@ -36,10 +40,8 @@ interface Overview {
   students: StudentSummary[]
   overallAccuracy: string
   questionStats: QuestionStat[]
-  levelSummaries: LevelSummary[]
+  levelSummaries: LevelSummaryItem[]
 }
-
-const LEVEL_NAMES = ['', '引论', '发展历程', '基本特性', '运行环境', '体系结构', '系统调用']
 
 export default function TeacherDashboard() {
   const { teacher, logout } = useAuth()
@@ -90,7 +92,6 @@ export default function TeacherDashboard() {
   return (
     <main className="min-h-screen px-4 py-8">
       <div className="max-w-5xl mx-auto space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold glow-text">教师仪表盘</h1>
@@ -104,27 +105,13 @@ export default function TeacherDashboard() {
           </button>
         </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <div className="card-glass p-4 text-center">
-            <p className="text-2xl font-bold text-accent">{data.studentCount}</p>
-            <p className="text-xs text-zinc-500 mt-1">参与学生</p>
-          </div>
-          <div className="card-glass p-4 text-center">
-            <p className="text-2xl font-bold text-green-400">{data.overallAccuracy}%</p>
-            <p className="text-xs text-zinc-500 mt-1">整体正确率</p>
-          </div>
-          <div className="card-glass p-4 text-center">
-            <p className="text-2xl font-bold text-yellow-400">{data.levelSummaries.length}</p>
-            <p className="text-xs text-zinc-500 mt-1">关卡数量</p>
-          </div>
-          <div className="card-glass p-4 text-center">
-            <p className="text-2xl font-bold text-blue-400">{data.questionStats.length}</p>
-            <p className="text-xs text-zinc-500 mt-1">题目总数</p>
-          </div>
-        </div>
+        <OverviewCards
+          studentCount={data.studentCount}
+          overallAccuracy={data.overallAccuracy}
+          levelCount={data.levelSummaries.length}
+          questionCount={data.questionStats.length}
+        />
 
-        {/* Tabs */}
         <div className="flex gap-1 bg-surface rounded-xl p-1 w-fit">
           {(['overview', 'students', 'questions'] as const).map((tab) => (
             <button
@@ -141,97 +128,10 @@ export default function TeacherDashboard() {
           ))}
         </div>
 
-        {/* Tab Content */}
         <AnimatePresence mode="wait">
-          {activeTab === 'overview' && (
-            <motion.div
-              key="overview"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-3"
-            >
-              {data.levelSummaries.map((lv) => (
-                <div key={lv.levelId} className="card-glass p-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-zinc-200">Lv.{lv.levelId} {LEVEL_NAMES[lv.levelId]}</p>
-                    <p className="text-xs text-zinc-500">{lv.studentCount} 名学生参与</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-bold text-accent">{lv.accuracy}%</p>
-                    <p className="text-xs text-zinc-500">正确率</p>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          )}
-
-          {activeTab === 'students' && (
-            <motion.div
-              key="students"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-2"
-            >
-              {data.students.length === 0 && (
-                <p className="text-zinc-500 text-center py-8">暂无学生数据</p>
-              )}
-              {data.students.map((s) => (
-                <div key={s.student_id} className="card-glass p-4 flex items-center justify-between">
-                  <div>
-                    <p className="font-medium text-zinc-200">{s.name}</p>
-                    <p className="text-xs text-zinc-500">{s.student_id}</p>
-                  </div>
-                  <div className="flex items-center gap-6 text-sm">
-                    <div className="text-center">
-                      <p className="text-zinc-300">{s.answered}</p>
-                      <p className="text-xs text-zinc-500">已答</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-green-400">{s.correct}</p>
-                      <p className="text-xs text-zinc-500">正确</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-accent font-bold">{s.accuracy}%</p>
-                      <p className="text-xs text-zinc-500">正确率</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          )}
-
-          {activeTab === 'questions' && (
-            <motion.div
-              key="questions"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-2"
-            >
-              {data.questionStats.map((q) => (
-                <div key={q.id} className="card-glass p-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-zinc-200 truncate">{q.stem}</p>
-                      <p className="text-xs text-zinc-500 mt-1">
-                        Lv.{q.levelId} · {q.type === 'choice' ? '选择' : q.type === 'judge' ? '判断' : '匹配'} · {q.totalAnswers} 人次作答
-                      </p>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <p className={`text-sm font-bold ${parseFloat(q.accuracy) >= 60 ? 'text-green-400' : parseFloat(q.accuracy) >= 30 ? 'text-yellow-400' : 'text-red-400'}`}>
-                        {q.accuracy}%
-                      </p>
-                      <p className="text-xs text-zinc-500">
-                        {q.correctAnswers ?? 0}/{q.totalAnswers} 正确
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </motion.div>
-          )}
+          {activeTab === 'overview' && <LevelSummary data={data.levelSummaries} />}
+          {activeTab === 'students' && <StudentList data={data.students} />}
+          {activeTab === 'questions' && <QuestionStats data={data.questionStats} />}
         </AnimatePresence>
       </div>
     </main>

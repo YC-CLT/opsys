@@ -57,3 +57,6 @@
 - **R3F `<line>` 与 SVG `<line>` 冲突**：JSX 中 `<line>` 被 TypeScript 解析为 SVG 元素，不接受 `geometry` prop。必须预先创建 `THREE.Line` 对象，用 `<primitive object={lineObj} />` 渲染。
 - **Next.js Client Component `useParams()` 需 `<Suspense>`**：在 `'use client'` 组件中直接使用 `useParams()` 会阻塞 `next build` 的静态预渲染。拆分为内层组件 + 外层 `<Suspense>` 包裹。
 - **three.js 内置类型**：three@0.137 起自带 `.d.ts`，无需单独安装 `@types/three`。
+- **全局 AudioProvider vs 页面 useAudio**：音频控制需全局可达（SettingsPanel 在 RootLayout 层），用 Context Provider 而非页面级 hook。AudioProvider 集中管理 BGM/SFX 开关 + 音量状态。
+- **Provider 嵌套优化**：多个 Context Provider 应抽取为 RootProvider 集中包装，避免 layout.tsx 出现深层嵌套。
+- **Teacher Dashboard 组件拆分**：页组件保持薄编排器角色，Tab内容拆为独立组件（OverviewCards/LevelSummary/StudentList/QuestionStats），每个处理自己的 Framer Motion 动画。

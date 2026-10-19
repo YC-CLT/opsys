@@ -1,9 +1,9 @@
 'use client'
 
 import { Geist, Geist_Mono } from 'next/font/google'
-import { ModeProvider } from '@/hooks/useModeDetect'
-import { AuthProvider } from '@/hooks/useAuth'
+import RootProvider from '@/components/RootProvider'
 import KanbanMusume from '@/components/KanbanMusume'
+import SettingsPanel from '@/components/SettingsPanel'
 import './globals.css'
 
 const geistSans = Geist({
@@ -25,14 +25,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)] relative">
         <div className="stars-bg" />
-        <ModeProvider>
-          <AuthProvider>
-            <div className="relative z-10 min-h-screen">
-              {children}
-            </div>
-            <KanbanMusume />
-          </AuthProvider>
-        </ModeProvider>
+        <RootProvider>
+          <div className="relative z-10 min-h-screen">
+            {children}
+          </div>
+          <SettingsPanel />
+          <KanbanMusume />
+        </RootProvider>
       </body>
     </html>
   )
