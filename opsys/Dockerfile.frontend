@@ -1,0 +1,25 @@
+FROM node:20-alpine AS base
+WORKDIR /app
+
+FROM base AS deps
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY opsys/frontend/package.json ./opsys/frontend/
+COPY opsys/backend/package.json ./opsys/backend/
+RUN corepack enable pnpm && pnpm install --frozen-lockfile
+
+FROM deps AS build
+COPY . .
+COPY opsys/frontend/.env.production /app/opsys/frontend/.env.production
+RUN corepack enable pnpm && pnpm --filter frontend build
+
+FROM base AS runner
+COPY --from=build /app/opsys/frontend/.next/standalone /app
+COPY --from=build /app/opsys/frontend/.next/static /app/opsys/frontend/.next/static
+COPY --from=build /app/opsys/frontend/public /app/opsys/frontend/public
+
+EXPOSE 3000
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV NEXT_TELEMETRY_DISABLED=1
+
+CMD ["node", "opsys/frontend/server.js"]

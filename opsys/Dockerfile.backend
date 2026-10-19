@@ -1,0 +1,20 @@
+FROM node:20-alpine AS base
+WORKDIR /app
+
+FROM base AS deps
+COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
+COPY opsys/backend/package.json ./opsys/backend/
+COPY opsys/frontend/package.json ./opsys/frontend/
+RUN corepack enable pnpm && pnpm install --frozen-lockfile
+
+FROM deps AS build
+COPY . .
+RUN corepack enable pnpm && pnpm --filter backend build
+
+FROM base AS runner
+COPY --from=build /app/opsys/backend/dist /app/dist
+COPY --from=build /app/opsys/backend/node_modules /app/node_modules
+COPY --from=build /app/opsys/frontend/.next /app/public
+
+EXPOSE 4000
+CMD ["node", "dist/index.js"]
