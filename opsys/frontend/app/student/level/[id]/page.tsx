@@ -150,9 +150,13 @@ function QuizPageContent() {
     )
   }
 
+  useEffect(() => {
+    if (finished) {
+      router.replace(`/student/result?level=${levelId}&correct=${score.correct}&total=${score.total}`)
+    }
+  }, [finished, levelId, score.correct, score.total, router])
+
   if (finished) {
-    const pct = score.total > 0 ? Math.round((score.correct / score.total) * 100) : 0
-    router.replace(`/student/result?level=${levelId}&correct=${score.correct}&total=${score.total}`)
     return null
   }
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-20 — Bug 修复
+
+### fix(frontend): router.replace 从渲染阶段移至 useEffect
+
+- `app/student/level/[id]/page.tsx` — 答题完成后 `router.replace()` 原在渲染阶段直接调用，引发 React "Cannot update a component while rendering a different component" 错误
+- 将导航逻辑移入 `useEffect`，依赖 `finished` 状态触发
+- 移除未使用的 `pct` 变量
+
 ## 2026-10-19 — Plan+Spec vs Actual 全量对齐 (第二轮)
 
 ### feat(frontend): 关底总结页 — /student/result

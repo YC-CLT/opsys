@@ -63,3 +63,4 @@
 - **Next.js 静态预渲染与中文文件名**：`public/` 下的中文文件名（如 `看板娘.png`）在预渲染时触发 ByteString 编码错误。使用 ASCII 文件名（如 `mascot.png`）。
 - **useSearchParams 需 Suspense**：与 useParams 同理，Client Component 中直接使用 useSearchParams() 会阻塞静态预渲染，需要外层 Suspense 包裹。
 - **路由重命名需清 .next 缓存**：移动 App Router 页面目录后，.next/dev/types/validator.ts 可能缓存旧路径引用，需 `rm -rf .next` 后重新构建。
+- **router.replace/push 必须在 useEffect 中调用**：在渲染阶段直接调用 `router.replace()` 或 `router.push()` 会触发 "Cannot update a component while rendering a different component" 错误。导航是 side effect，必须放入 `useEffect` 或事件处理器中，不能放在组件函数体顶层。
