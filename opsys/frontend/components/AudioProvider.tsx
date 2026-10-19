@@ -109,6 +109,18 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     sfxPool.current.add(audio)
   }, [sfxEnabled, volume])
 
+  // Global click sound
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (target.tagName === 'BUTTON' || target.tagName === 'A' || target.closest('button') || target.closest('a')) {
+        playSFX('/audio/click.wav')
+      }
+    }
+    document.addEventListener('click', handler)
+    return () => document.removeEventListener('click', handler)
+  }, [playSFX])
+
   return (
     <AudioContext.Provider value={{ bgmEnabled, sfxEnabled, volume, toggleBGM, toggleSFX, setVolume, playBGM, stopBGM, playSFX }}>
       {children}

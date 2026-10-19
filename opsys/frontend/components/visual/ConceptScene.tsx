@@ -4,6 +4,7 @@ import { useRef, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls, Text3D, Float } from '@react-three/drei'
 import * as THREE from 'three'
+import MemoryScene from './MemoryScene'
 
 function OSStack() {
   const groupRef = useRef<THREE.Group>(null)
@@ -238,7 +239,7 @@ function SceneContent({ levelId }: { levelId: number }) {
   switch (levelId) {
     case 1: return <OSStack />
     case 2: return <OSEvolution />
-    case 3: return <ConcurrencyParallel />
+    case 3: return <MemoryScene />
     case 4: return <InterruptKernelMode />
     case 5: return <OSStructure />
     case 6: return <PentagonRadar />

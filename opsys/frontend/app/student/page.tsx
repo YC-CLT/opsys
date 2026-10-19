@@ -5,14 +5,16 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { useAuth } from '@/hooks/useAuth'
-import FakeTerminal from '@/components/FakeTerminal'
+import { useAudio } from '@/components/AudioProvider'
+import Terminal from '@/components/ui/Terminal'
 
-const StarMap = dynamic(() => import('@/components/StarMap'), { ssr: false })
+const StarMap = dynamic(() => import('@/components/ui/StarMap'), { ssr: false })
 
 const LEVEL_NAMES = ['', '第一章·引论', '发展历程', '基本特性', '运行环境', '体系结构', '系统调用']
 
 export default function StudentDashboard() {
   const { student, logout } = useAuth()
+  const { playBGM } = useAudio()
   const router = useRouter()
 
   useEffect(() => {
@@ -21,6 +23,10 @@ export default function StudentDashboard() {
     }
   }, [student, router])
 
+  useEffect(() => {
+    playBGM('/audio/bg1.mp3')
+  }, [])
+
   if (!student) return null
 
   const progress = student.progress || []
@@ -28,7 +34,7 @@ export default function StudentDashboard() {
   const handleSelectLevel = (level: number) => {
     const unlocked = level === 1 || progress.includes(level - 1)
     if (unlocked) {
-      router.push(`/quiz/${level}`)
+      router.push(`/student/${level}`)
     }
   }
 
@@ -114,7 +120,7 @@ export default function StudentDashboard() {
         transition={{ duration: 0.5, delay: 0.6 }}
         className="w-full max-w-4xl"
       >
-        <FakeTerminal />
+        <Terminal userName={student.name} studentId={student.studentId} />
       </motion.div>
     </main>
   )
