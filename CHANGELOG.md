@@ -1,6 +1,70 @@
 # Changelog
 
-## 2026-10-19 — Plan vs Actual 差距修复
+## 2026-10-19 — Plan+Spec vs Actual 全量对齐 (第二轮)
+
+### feat(frontend): 关底总结页 — /student/result
+
+- `app/student/result/page.tsx` — 接收 `?level=X&correct=Y&total=Z` 查询参数
+- 展示关卡名、得分/正确率、星级评价、解锁下一关/返回星图
+- 带 Suspense 边界（useSearchParams）
+
+### feat(frontend): 学生详情页 — /teacher/student/[id]
+
+- `app/teacher/student/[id]/page.tsx` — 调用 `/api/teacher/student/:id`
+- 展示单生答题记录、筛选（all/correct/wrong）、正确率统计
+- 带 Suspense 边界（useParams）
+
+### feat(frontend): Terminal 可交互升级
+
+- `components/Terminal.tsx` — 从纯动画装饰升级为可交互伪终端
+- 支持 5 条命令：`help` / `ls` / `cd level<N>` / `clear` / `whoami`
+- ↑↓ 上下键历史命令导航
+- 启动播 InitTerminal.wav、自动滚动到底部
+- 接收 userName/studentId props 展示用户信息
+
+### feat(frontend): MemoryScene — 虚拟存储器 3D 场景
+
+- `components/visual/MemoryScene.tsx` — 物理块 + 网格映射线 + 9 个逻辑块浮动
+- ConceptScene Lv.3 切换为 MemoryScene
+
+### feat(frontend): 音效系统接入
+
+- `app/student/page.tsx` — 入口自动播 bg1.mp3
+- `app/student/[level]/page.tsx` — 答对播 SUCCESS.mp3、答错播 FAIL.wav
+- `components/SettingsPanel.tsx` — 打开播 SettingsUI.mp3
+- `components/AudioProvider.tsx` — button/a 点击全局播 click.wav
+
+### feat(frontend): 资源文件补全
+
+- `public/audio/` — 从 assets/audio/ 复制全部 BGM/SFX
+- `public/img/mascot.png` — 从 assets/img/看板娘.png 复制并 ASCII 化
+
+### refactor(frontend): 组件命名对齐 Spec
+
+- `KanbanMusume.tsx` → `Mascot.tsx`
+- `FakeTerminal.tsx` → `Terminal.tsx`
+- `ChoiceQuestion.tsx` → `ChoiceQuiz.tsx`
+- `JudgeQuestion.tsx` → `JudgeQuiz.tsx`
+- `MatchQuestion.tsx` → `MatchQuiz.tsx`
+- `ResultCard.tsx` → `QuizFeedback.tsx`
+
+### refactor(frontend): 路由对齐 Spec — `/quiz/[level]` → `/student/[level]`
+
+- `app/quiz/[level]/page.tsx` → `app/student/[level]/page.tsx`
+- 同步更新 `student/page.tsx`、`student/result/page.tsx`、`Terminal.tsx` 中的路由引用
+
+### refactor(frontend): 看板娘左下角 + PNG 素材
+
+- `Mascot.tsx` — `fixed bottom-4 right-4` → `bottom-4 left-4`
+- SVG 内联替为 `<img src="/img/mascot.png">`
+
+### fix(frontend): 答题完成跳转
+
+- `app/student/[level]/page.tsx` — 内联结果页改为 `router.replace('/student/result?...')`
+
+---
+
+## 2026-10-19 — Plan vs Actual 差距修复 (第一轮)
 
 ### feat(frontend): RootProvider — 全局 Context 集中化
 

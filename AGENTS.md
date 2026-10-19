@@ -60,3 +60,6 @@
 - **全局 AudioProvider vs 页面 useAudio**：音频控制需全局可达（SettingsPanel 在 RootLayout 层），用 Context Provider 而非页面级 hook。AudioProvider 集中管理 BGM/SFX 开关 + 音量状态。
 - **Provider 嵌套优化**：多个 Context Provider 应抽取为 RootProvider 集中包装，避免 layout.tsx 出现深层嵌套。
 - **Teacher Dashboard 组件拆分**：页组件保持薄编排器角色，Tab内容拆为独立组件（OverviewCards/LevelSummary/StudentList/QuestionStats），每个处理自己的 Framer Motion 动画。
+- **Next.js 静态预渲染与中文文件名**：`public/` 下的中文文件名（如 `看板娘.png`）在预渲染时触发 ByteString 编码错误。使用 ASCII 文件名（如 `mascot.png`）。
+- **useSearchParams 需 Suspense**：与 useParams 同理，Client Component 中直接使用 useSearchParams() 会阻塞静态预渲染，需要外层 Suspense 包裹。
+- **路由重命名需清 .next 缓存**：移动 App Router 页面目录后，.next/dev/types/validator.ts 可能缓存旧路径引用，需 `rm -rf .next` 后重新构建。
