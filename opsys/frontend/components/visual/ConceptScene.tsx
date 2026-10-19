@@ -131,6 +131,19 @@ function ConcurrencyParallel() {
   )
 }
 
+function CombinedLevel3() {
+  return (
+    <group>
+      <group position={[-1.2, 0, 0]}>
+        <ConcurrencyParallel />
+      </group>
+      <group position={[1.2, 0, 0]}>
+        <MemoryScene />
+      </group>
+    </group>
+  )
+}
+
 function InterruptKernelMode() {
   const ringRef = useRef<THREE.Mesh>(null)
 
@@ -239,7 +252,7 @@ function SceneContent({ levelId }: { levelId: number }) {
   switch (levelId) {
     case 1: return <OSStack />
     case 2: return <OSEvolution />
-    case 3: return <MemoryScene />
+    case 3: return <CombinedLevel3 />
     case 4: return <InterruptKernelMode />
     case 5: return <OSStructure />
     case 6: return <PentagonRadar />

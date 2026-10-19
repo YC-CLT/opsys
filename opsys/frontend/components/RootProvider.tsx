@@ -2,7 +2,7 @@
 
 import { ModeProvider } from '@/hooks/useModeDetect'
 import { AuthProvider } from '@/hooks/useAuth'
-import { AudioProvider } from './AudioProvider'
+import { AudioProvider } from './ui/AudioProvider'
 
 export default function RootProvider({ children }: { children: React.ReactNode }) {
   return (

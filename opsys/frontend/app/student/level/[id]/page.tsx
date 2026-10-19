@@ -11,7 +11,7 @@ import JudgeQuiz from '@/components/quiz/JudgeQuiz'
 import MatchQuiz from '@/components/quiz/MatchQuiz'
 import QuizFeedback from '@/components/quiz/QuizFeedback'
 import Terminal from '@/components/ui/Terminal'
-import { useAudio } from '@/components/AudioProvider'
+import { useAudio } from '@/components/ui/AudioProvider'
 
 interface QuestionData {
   id: string
@@ -36,9 +36,9 @@ function QuizPageContent() {
   const router = useRouter()
   const { student } = useAuth()
   const { mode } = useModeDetect()
-  const { playSFX } = useAudio()
+  const { playSFX, playBGM } = useAudio()
 
-  const levelId = parseInt(params.level as string)
+  const levelId = parseInt(params.id as string)
 
   const [questions, setQuestions] = useState<QuestionData[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -56,10 +56,11 @@ function QuizPageContent() {
 
   useEffect(() => {
     if (!student) {
-      router.replace('/login/student')
+      router.replace('/student')
       return
     }
     loadQuestions()
+    playBGM('/audio/bg1.mp3', 0.3)
   }, [levelId, student])
 
   const loadQuestions = async () => {
@@ -142,7 +143,7 @@ function QuizPageContent() {
     return (
       <main className="min-h-screen flex flex-col items-center justify-center gap-4">
         <p className="text-red-400">{error}</p>
-        <button onClick={() => router.push('/student')} className="text-sm text-accent hover:underline">
+        <button onClick={() => router.push('/student/dashboard')} className="text-sm text-accent hover:underline">
           返回星图
         </button>
       </main>
@@ -159,7 +160,7 @@ function QuizPageContent() {
     <main className="min-h-screen flex flex-col items-center px-4 py-8 gap-6">
       <div className="w-full max-w-2xl flex items-center justify-between">
         <button
-          onClick={() => router.push('/student')}
+          onClick={() => router.push('/student/dashboard')}
           className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
         >
           ← 返回星图

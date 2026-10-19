@@ -67,14 +67,14 @@ function ResultContent() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              onClick={() => router.push(`/student/${levelId + 1}`)}
+              onClick={() => router.push(`/student/level/${levelId + 1}`)}
               className="w-full py-3 rounded-xl bg-accent/20 border border-accent/40 text-accent font-medium hover:bg-accent/30 transition-colors"
             >
               挑战下一关
             </motion.button>
           )}
           <button
-            onClick={() => router.push('/student')}
+            onClick={() => router.push('/student/dashboard')}
             className="w-full py-3 rounded-xl border border-zinc-600/40 text-zinc-400 hover:text-zinc-200 transition-colors"
           >
             返回星图

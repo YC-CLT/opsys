@@ -35,7 +35,7 @@ function DetailContent() {
 
   useEffect(() => {
     if (!teacher) {
-      router.replace('/login/teacher')
+      router.replace('/teacher/login')
       return
     }
     loadStudent()
@@ -66,7 +66,7 @@ function DetailContent() {
     return (
       <main className="min-h-screen flex flex-col items-center justify-center gap-4">
         <p className="text-red-400">{error || '加载失败'}</p>
-        <button onClick={() => router.push('/teacher')} className="text-sm text-accent hover:underline">返回仪表盘</button>
+        <button onClick={() => router.push('/teacher/dashboard')} className="text-sm text-accent hover:underline">返回仪表盘</button>
       </main>
     )
   }
@@ -88,7 +88,7 @@ function DetailContent() {
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <button onClick={() => router.push('/teacher')} className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors mb-2">
+            <button onClick={() => router.push('/teacher/dashboard')} className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors mb-2">
               ← 返回仪表盘
             </button>
             <h1 className="text-2xl font-bold glow-text">学生详情</h1>

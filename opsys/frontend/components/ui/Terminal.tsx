@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useAudio } from '@/components/AudioProvider'
+import { useAudio } from '@/components/ui/AudioProvider'
 import { useRouter } from 'next/navigation'
 
 interface LogLine {
@@ -127,7 +127,7 @@ export default function Terminal({ onEnterLevel, userName, studentId }: Terminal
       if (onEnterLevel) {
         onEnterLevel(level)
       } else {
-        router.push(`/student/${level}`)
+        router.push(`/student/level/${level}`)
       }
     } else {
       addLine('error', `bash: ${trimmed.split(' ')[0]}: command not found`)

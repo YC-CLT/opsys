@@ -5,37 +5,26 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import { useAuth } from '@/hooks/useAuth'
 
-export default function StudentLoginPage() {
-  const [studentId, setStudentId] = useState('')
-  const [name, setName] = useState('')
+export default function TeacherLoginPage() {
+  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { loginStudent } = useAuth()
+  const { loginTeacher } = useAuth()
   const router = useRouter()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
-    if (!/^\d{12}$/.test(studentId)) {
-      setError('学号格式错误，需为 12 位数字')
-      return
-    }
-
-    if (!name.trim()) {
-      setError('请输入姓名')
-      return
-    }
-
-    if (name.length > 50) {
-      setError('姓名过长')
+    if (!password) {
+      setError('请输入密码')
       return
     }
 
     setLoading(true)
     try {
-      await loginStudent(studentId, name.trim())
-      router.replace('/student')
+      await loginTeacher(password)
+      router.replace('/teacher/dashboard')
     } catch (err) {
       setError(err instanceof Error ? err.message : '登录失败')
     } finally {
@@ -52,36 +41,22 @@ export default function StudentLoginPage() {
         className="w-full max-w-md"
       >
         <h1 className="text-3xl font-bold text-center glow-text mb-2">
-          学生登录
+          教师登录
         </h1>
         <p className="text-center text-zinc-500 mb-8 text-sm">
-          输入学号与姓名，开启 OS 之旅
+          输入授权密码进入教学仪表盘
         </p>
 
         <form onSubmit={handleSubmit} className="card-glass p-8 space-y-5">
           <div>
-            <label className="block text-sm text-zinc-400 mb-1.5">学号</label>
+            <label className="block text-sm text-zinc-400 mb-1.5">密码</label>
             <input
-              type="text"
-              value={studentId}
-              onChange={(e) => setStudentId(e.target.value.replace(/\D/g, '').slice(0, 12))}
-              placeholder="输入 12 位学号"
-              maxLength={12}
-              inputMode="numeric"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="输入教师密码"
               className="w-full bg-zinc-800/50 border border-zinc-600/40 rounded-xl px-4 py-3 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30 transition-colors"
               autoFocus
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm text-zinc-400 mb-1.5">姓名</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="输入你的姓名"
-              maxLength={50}
-              className="w-full bg-zinc-800/50 border border-zinc-600/40 rounded-xl px-4 py-3 text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-accent/60 focus:ring-1 focus:ring-accent/30 transition-colors"
             />
           </div>
 
@@ -100,7 +75,7 @@ export default function StudentLoginPage() {
             disabled={loading}
             className="w-full py-3 rounded-xl bg-accent/25 border border-accent/40 text-accent font-medium hover:bg-accent/35 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? '登录中...' : '开始闯关'}
+            {loading ? '验证中...' : '进入仪表盘'}
           </button>
 
           <button

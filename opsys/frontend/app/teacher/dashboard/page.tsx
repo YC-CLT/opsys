@@ -53,7 +53,7 @@ export default function TeacherDashboard() {
 
   useEffect(() => {
     if (!teacher) {
-      router.replace('/login/teacher')
+      router.replace('/teacher/login')
       return
     }
     loadData()

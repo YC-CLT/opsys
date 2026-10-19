@@ -2,10 +2,10 @@
 
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useAudio } from '@/components/AudioProvider'
+import { useAudio } from '@/components/ui/AudioProvider'
 
 export default function SettingsPanel() {
-  const { bgmEnabled, sfxEnabled, volume, toggleBGM, toggleSFX, setVolume, playSFX } = useAudio()
+  const { bgmEnabled, sfxEnabled, volume, toggleBGM, toggleSFX, setVolume, playSFX, bgmTrackIndex, bgmTracks, playNextBGM, playPrevBGM } = useAudio()
   const [open, setOpen] = useState(false)
 
   const handleOpen = () => {
@@ -74,6 +74,28 @@ export default function SettingsPanel() {
                     />
                   </button>
                 </div>
+
+                {bgmEnabled && (
+                  <div className="flex items-center justify-between gap-2">
+                    <button
+                      onClick={playPrevBGM}
+                      className="w-8 h-8 rounded-lg bg-surface border border-zinc-600/40 flex items-center justify-center text-zinc-400 hover:text-zinc-200 transition-colors text-xs"
+                      title="上一首"
+                    >
+                      ⏮
+                    </button>
+                    <span className="text-xs text-zinc-400 font-mono truncate max-w-[140px]">
+                      {bgmTracks[bgmTrackIndex] ? bgmTracks[bgmTrackIndex].replace('/audio/', '').replace('.mp3', '') : '-'}
+                    </span>
+                    <button
+                      onClick={playNextBGM}
+                      className="w-8 h-8 rounded-lg bg-surface border border-zinc-600/40 flex items-center justify-center text-zinc-400 hover:text-zinc-200 transition-colors text-xs"
+                      title="下一首"
+                    >
+                      ⏭
+                    </button>
+                  </div>
+                )}
 
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-zinc-300">音效</span>
