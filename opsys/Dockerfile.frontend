@@ -4,12 +4,12 @@ WORKDIR /app
 FROM base AS deps
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
 COPY opsys/frontend/package.json ./opsys/frontend/
-COPY opsys/backend/package.json ./opsys/backend/
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
 FROM deps AS build
+ARG NEXT_PUBLIC_API_URL=http://localhost:4000
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 COPY . .
-COPY opsys/frontend/.env.production /app/opsys/frontend/.env.production
 RUN corepack enable pnpm && pnpm --filter frontend build
 
 FROM base AS runner
