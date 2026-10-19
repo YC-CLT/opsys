@@ -57,7 +57,7 @@
       "id": "Q4",
       "type": "choice",
       "difficulty": "intermediate",
-      "levelId": 2,
+      "levelId": 1,
       "content": {
         "stem": "OS 作为计算机系统资源的管理者，管理的四类资源是：",
         "options": [
@@ -74,7 +74,7 @@
       "id": "Q5",
       "type": "choice",
       "difficulty": "intermediate",
-      "levelId": 2,
+      "levelId": 6,
       "content": {
         "stem": "在现代多道程序系统中，处理机分配和运行的基本单位是：",
         "options": [
@@ -125,7 +125,7 @@
       "id": "Q8",
       "type": "choice",
       "difficulty": "intermediate",
-      "levelId": 2,
+      "levelId": 3,
       "content": {
         "stem": "虚拟存储器使用的是什么技术？",
         "options": [
@@ -142,7 +142,7 @@
       "id": "Q9",
       "type": "choice",
       "difficulty": "basic",
-      "levelId": 1,
+      "levelId": 4,
       "content": {
         "stem": "处理机工作在管态（内核态）时，模式位的值是：",
         "options": [
@@ -159,7 +159,7 @@
       "id": "Q10",
       "type": "choice",
       "difficulty": "discriminate",
-      "levelId": 3,
+      "levelId": 4,
       "content": {
         "stem": "以下哪项属于“异常”而非“中断”？",
         "options": [
@@ -176,7 +176,7 @@
       "id": "Q11",
       "type": "choice",
       "difficulty": "basic",
-      "levelId": 1,
+      "levelId": 6,
       "content": {
         "stem": "存储器管理应实现的四项功能中，不包括以下哪项？",
         "options": [
@@ -193,7 +193,7 @@
       "id": "Q12",
       "type": "choice",
       "difficulty": "intermediate",
-      "levelId": 2,
+      "levelId": 5,
       "content": {
         "stem": "微内核结构将操作系统分为哪两大部分？",
         "options": [
@@ -210,7 +210,7 @@
       "id": "Q13",
       "type": "choice",
       "difficulty": "discriminate",
-      "levelId": 3,
+      "levelId": 5,
       "content": {
         "stem": "关于外核（Exokernel）结构，以下描述正确的是：",
         "options": [
@@ -227,7 +227,7 @@
       "id": "Q14",
       "type": "choice",
       "difficulty": "basic",
-      "levelId": 1,
+      "levelId": 6,
       "content": {
         "stem": "用户程序取得操作系统服务的唯一途径是：",
         "options": [
@@ -244,7 +244,7 @@
       "id": "Q15",
       "type": "choice",
       "difficulty": "intermediate",
-      "levelId": 2,
+      "levelId": 6,
       "content": {
         "stem": "系统调用从用户态切换到内核态的机制是：",
         "options": [
@@ -272,7 +272,7 @@
       "id": "Q17",
       "type": "judge",
       "difficulty": "basic",
-      "levelId": 1,
+      "levelId": 2,
       "content": {
         "stem": "单道批处理系统中引入监督程序（Monitor）后，内存中可同时驻留多道程序。"
       },
@@ -305,7 +305,7 @@
       "id": "Q20",
       "type": "judge",
       "difficulty": "basic",
-      "levelId": 1,
+      "levelId": 4,
       "content": {
         "stem": "中断只能由计算机硬件引发，软件无法引发中断。"
       },
@@ -316,7 +316,7 @@
       "id": "Q21",
       "type": "judge",
       "difficulty": "intermediate",
-      "levelId": 2,
+      "levelId": 4,
       "content": {
         "stem": "现代操作系统的内核将中断处理、时钟管理和原语管理归类为“支撑功能”。"
       },
@@ -327,7 +327,7 @@
       "id": "Q22",
       "type": "judge",
       "difficulty": "basic",
-      "levelId": 1,
+      "levelId": 5,
       "content": {
         "stem": "按教材的划分，OS 的五种结构演进顺序是：简单结构 → 模块化结构 → 分层结构 → 微内核结构 → 外核结构。"
       },
@@ -338,7 +338,7 @@
       "id": "Q23",
       "type": "judge",
       "difficulty": "intermediate",
-      "levelId": 2,
+      "levelId": 5,
       "content": {
         "stem": "模块化结构的最大优点是能够保证各模块接口在划分完成时即满足所有实际需求。"
       },
@@ -349,7 +349,7 @@
       "id": "Q24",
       "type": "match",
       "difficulty": "basic",
-      "levelId": 1,
+      "levelId": 2,
       "content": {
         "stem": "将左侧 OS 发展阶段拖拽到右侧对应的核心特征上。",
         "pairs": [
@@ -383,7 +383,7 @@
       "id": "Q25",
       "type": "match",
       "difficulty": "intermediate",
-      "levelId": 2,
+      "levelId": 3,
       "content": {
         "stem": "将左侧术语拖拽到右侧对应的定义上。",
         "pairs": [
@@ -427,7 +427,7 @@
       "id": "Q26",
       "type": "match",
       "difficulty": "basic",
-      "levelId": 1,
+      "levelId": 6,
       "content": {
         "stem": "将左侧 OS 管理功能拖拽到右侧对应的主要任务上。",
         "pairs": [
@@ -466,7 +466,7 @@
       "id": "Q27",
       "type": "match",
       "difficulty": "intermediate",
-      "levelId": 2,
+      "levelId": 5,
       "content": {
         "stem": "将左侧 OS 结构类型拖拽到右侧对应的核心描述上。",
         "pairs": [
@@ -505,7 +505,7 @@
       "id": "Q28",
       "type": "match",
       "difficulty": "intermediate",
-      "levelId": 2,
+      "levelId": 6,
       "content": {
         "stem": "将左侧系统调用类别拖拽到右侧对应的典型操作上。",
         "pairs": [
