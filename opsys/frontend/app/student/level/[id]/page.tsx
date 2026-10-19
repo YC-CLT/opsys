@@ -63,6 +63,12 @@ function QuizPageContent() {
     playBGM('/audio/bg1.mp3', 0.3)
   }, [levelId, student])
 
+  useEffect(() => {
+    if (finished) {
+      router.replace(`/student/result?level=${levelId}&correct=${score.correct}&total=${score.total}`)
+    }
+  }, [finished, levelId, score.correct, score.total, router])
+
   const loadQuestions = async () => {
     try {
       setLoading(true)
@@ -149,12 +155,6 @@ function QuizPageContent() {
       </main>
     )
   }
-
-  useEffect(() => {
-    if (finished) {
-      router.replace(`/student/result?level=${levelId}&correct=${score.correct}&total=${score.total}`)
-    }
-  }, [finished, levelId, score.correct, score.total, router])
 
   if (finished) {
     return null

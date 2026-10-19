@@ -8,6 +8,16 @@
 - 将导航逻辑移入 `useEffect`，依赖 `finished` 状态触发
 - 移除未使用的 `pct` 变量
 
+### fix(frontend): useEffect 位置违反 Rules of Hooks
+
+- `app/student/level/[id]/page.tsx` — 新增 `useEffect` 被放置在 early return (`if (loading)` / `if (error)`) 之后，导致首次渲染时 hook 未被调用，hook 数量在后续渲染中发生变化
+- 将 `useEffect` 移至所有 early return 之前，hook 声明区
+- 根因：上一轮修复只关注了 "router.replace 不能放 render"，忽略了 hooks 必须放在所有 early return 之前的规则
+
+### fix(frontend): 允许 127.0.0.1 访问 HMR
+
+- `next.config.ts` — 添加 `allowedDevOrigins: ['127.0.0.1']`，解决 Next.js 16 阻止跨源 HMR 的问题
+
 ## 2026-10-19 — Plan+Spec vs Actual 全量对齐 (第二轮)
 
 ### feat(frontend): 关底总结页 — /student/result
