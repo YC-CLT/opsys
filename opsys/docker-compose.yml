@@ -3,8 +3,7 @@ version: '3.8'
 services:
   backend:
     build:
-      context: ..
-/
+      context: ../
       dockerfile: opsys/Dockerfile.backend
     ports:
       - '4000:4000'

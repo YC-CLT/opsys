@@ -11,3 +11,8 @@ wheels/
 .trae
 mcp_tools_summary.csv
 docs/superpowers/*
+**/node_modules
+**/.next/
+*.db
+*.db-shm
+*.db-wal
