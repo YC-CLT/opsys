@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, Suspense } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '@/hooks/useAuth'
@@ -30,7 +30,7 @@ interface AnswerResult {
   explanation: string
 }
 
-export default function QuizPage() {
+function QuizPageContent() {
   const params = useParams()
   const router = useRouter()
   const { student } = useAuth()
@@ -265,5 +265,17 @@ export default function QuizPage() {
         <FakeTerminal />
       </div>
     </main>
+  )
+}
+
+export default function QuizPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center">
+        <p className="text-zinc-400 animate-pulse">加载中...</p>
+      </main>
+    }>
+      <QuizPageContent />
+    </Suspense>
   )
 }

@@ -126,31 +126,23 @@ function ConnectionLines({ progress }: { progress: number[] }) {
       const la = LEVELS[a - 1]
       const lb = LEVELS[b - 1]
       const bothUnlocked = (a === 1 || progress.includes(a - 1)) && (b === 1 || progress.includes(b - 1))
-
-      const mid: [number, number, number] = [
-        (la.pos[0] + lb.pos[0]) / 2,
-        (la.pos[1] + lb.pos[1]) / 2,
-        (la.pos[2] + lb.pos[2]) / 2,
-      ]
-
-      return { a: la.pos, b: lb.pos, mid, bothUnlocked, key: `${a}-${b}` }
+      const geo = new THREE.BufferGeometry()
+      geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array([...la.pos, ...lb.pos]), 3))
+      const mat = new THREE.LineBasicMaterial({
+        color: bothUnlocked ? '#a78bfa' : '#222',
+        transparent: true,
+        opacity: bothUnlocked ? 0.3 : 0.1,
+      })
+      const lineObj = new THREE.Line(geo, mat)
+      lineObj.name = `${a}-${b}`
+      return lineObj
     })
   }, [progress])
 
   return (
     <>
-      {lines.map((line) => (
-        <line key={line.key}>
-          <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              count={2}
-              array={new Float32Array([...line.a, ...line.b])}
-              itemSize={3}
-            />
-          </bufferGeometry>
-          <lineBasicMaterial color={line.bothUnlocked ? '#a78bfa' : '#222'} transparent opacity={line.bothUnlocked ? 0.3 : 0.1} />
-        </line>
+      {lines.map((lineObj) => (
+        <primitive key={lineObj.name} object={lineObj} />
       ))}
     </>
   )
@@ -158,12 +150,15 @@ function ConnectionLines({ progress }: { progress: number[] }) {
 
 function StarField() {
   const starsRef = useRef<THREE.Points>(null)
-  const positions = useMemo(() => {
+  const { geo, mat } = useMemo(() => {
+    const g = new THREE.BufferGeometry()
     const arr = new Float32Array(600)
     for (let i = 0; i < 600; i++) {
       arr[i] = (Math.random() - 0.5) * 30
     }
-    return arr
+    g.setAttribute('position', new THREE.BufferAttribute(arr, 3))
+    const m = new THREE.PointsMaterial({ size: 0.03, color: '#fff', transparent: true, opacity: 0.6, sizeAttenuation: true })
+    return { geo: g, mat: m }
   }, [])
 
   useFrame(() => {
@@ -171,12 +166,7 @@ function StarField() {
   })
 
   return (
-    <points ref={starsRef}>
-      <bufferGeometry>
-        <bufferAttribute attach="attributes-position" count={200} array={positions} itemSize={3} />
-      </bufferGeometry>
-      <pointsMaterial size={0.03} color="#fff" transparent opacity={0.6} sizeAttenuation />
-    </points>
+    <points ref={starsRef} geometry={geo} material={mat} />
   )
 }
 

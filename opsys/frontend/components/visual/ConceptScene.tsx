@@ -59,6 +59,23 @@ function OSEvolution() {
     if (ringRef.current) ringRef.current.rotation.y += delta * 0.15
   })
 
+  const lineObjs = useMemo(() => {
+    const objs: THREE.Line[] = []
+    for (let i = 0; i < items.length; i++) {
+      const j = (i + 1) % items.length
+      const a0 = (i / items.length) * Math.PI * 2
+      const a1 = (j / items.length) * Math.PI * 2
+      const points = [
+        new THREE.Vector3(Math.cos(a0) * r, 0, Math.sin(a0) * r),
+        new THREE.Vector3(Math.cos(a1) * r, 0, Math.sin(a1) * r),
+      ]
+      const geo = new THREE.BufferGeometry().setFromPoints(points)
+      const mat = new THREE.LineBasicMaterial({ color: '#00ff88', transparent: true, opacity: 0.3 })
+      objs.push(new THREE.Line(geo, mat))
+    }
+    return objs
+  }, [])
+
   return (
     <group ref={ringRef}>
       {items.map((item, i) => {
@@ -80,19 +97,9 @@ function OSEvolution() {
           </Float>
         )
       })}
-      {items.map((_, i) => {
-        const j = (i + 1) % items.length
-        const a0 = (i / items.length) * Math.PI * 2
-        const a1 = (j / items.length) * Math.PI * 2
-        const points = [
-          new THREE.Vector3(Math.cos(a0) * r, 0, Math.sin(a0) * r),
-          new THREE.Vector3(Math.cos(a1) * r, 0, Math.sin(a1) * r),
-        ]
-        const geo = new THREE.BufferGeometry().setFromPoints(points)
-        return <line key={`l-${i}`} geometry={geo}>
-          <lineBasicMaterial color="#00ff88" transparent opacity={0.3} />
-        </line>
-      })}
+      {lineObjs.map((obj, i) => (
+        <primitive key={`l-${i}`} object={obj} />
+      ))}
     </group>
   )
 }
@@ -184,6 +191,22 @@ function PentagonRadar() {
     return pts
   }, [])
 
+  const lineObjs = useMemo(() => {
+    const objs: THREE.Line[] = []
+    const edgeMat = new THREE.LineBasicMaterial({ color: '#00ff88', transparent: true, opacity: 0.5 })
+    const radialMat = new THREE.LineBasicMaterial({ color: '#00ff88', transparent: true, opacity: 0.15 })
+    for (let i = 0; i < corners.length; i++) {
+      const next = corners[(i + 1) % corners.length]
+      const geo1 = new THREE.BufferGeometry().setFromPoints([corners[i], next])
+      objs.push(new THREE.Line(geo1, edgeMat))
+    }
+    for (const p of corners) {
+      const geo2 = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), p])
+      objs.push(new THREE.Line(geo2, radialMat))
+    }
+    return objs
+  }, [corners])
+
   useFrame((_, delta) => {
     if (groupRef.current) groupRef.current.rotation.y += delta * 0.3
   })
@@ -204,19 +227,9 @@ function PentagonRadar() {
           </mesh>
         </Float>
       ))}
-      {corners.map((p, i) => {
-        const next = corners[(i + 1) % corners.length]
-        const geo = new THREE.BufferGeometry().setFromPoints([p, next])
-        return <line key={i} geometry={geo}>
-          <lineBasicMaterial color="#00ff88" transparent opacity={0.5} />
-        </line>
-      })}
-      {corners.map((p, i) => {
-        const geo = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, 0), p])
-        return <line key={`c-${i}`} geometry={geo}>
-          <lineBasicMaterial color="#00ff88" transparent opacity={0.15} />
-        </line>
-      })}
+      {lineObjs.map((obj, i) => (
+        <primitive key={`radar-l-${i}`} object={obj} />
+      ))}
     </group>
   )
 }
