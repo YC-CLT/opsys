@@ -16,6 +16,8 @@ app.use('/api/*', cors({
 
 app.get('/', (c) => c.json({ ok: true }))
 
+app.get('/api/health', (c) => c.json({ status: 'ok' }))
+
 app.route('/api/auth', authRoutes)
 app.route('/api/quiz', quizRoutes)
 app.route('/api/teacher', teacherRoutes)
