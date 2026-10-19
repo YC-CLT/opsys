@@ -1,6 +1,18 @@
 # Changelog
 
-## 2026-10-20 — Bug 修复
+## 2026-10-20 — Bug 修复 + 看板娘升级
+
+### feat(frontend): 看板娘可拖拽 + 多动作动画
+
+- `components/ui/Mascot.tsx` — 全面重写
+  - **拖拽移动**：PointerEvent 拖拽，自由摆放到屏幕任意位置，边界约束
+  - **位置持久化**：`localStorage` 存位置，刷新页面保持
+  - **多动作动画**：空闲时 rotate + scaleX/scaleY 组合（左右晃 + 拉扯），拖拽时动画幅度加大
+  - **点击兼容**：拖拽超过 3px 不触发点击，短按仍弹出气泡
+
+### fix(frontend): 重复提交改为提示并自动跳转
+
+- `app/student/level/[id]/page.tsx` — `handleAnswer` catch 块检测 "该题已作答，不可重复提交" 时弹 alert 并自动进入下一题
 
 ### fix(frontend): router.replace 从渲染阶段移至 useEffect
 
@@ -12,7 +24,6 @@
 
 - `app/student/level/[id]/page.tsx` — 新增 `useEffect` 被放置在 early return (`if (loading)` / `if (error)`) 之后，导致首次渲染时 hook 未被调用，hook 数量在后续渲染中发生变化
 - 将 `useEffect` 移至所有 early return 之前，hook 声明区
-- 根因：上一轮修复只关注了 "router.replace 不能放 render"，忽略了 hooks 必须放在所有 early return 之前的规则
 
 ### fix(frontend): 允许 127.0.0.1 访问 HMR
 

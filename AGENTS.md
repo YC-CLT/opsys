@@ -65,3 +65,4 @@
 - **路由重命名需清 .next 缓存**：移动 App Router 页面目录后，.next/dev/types/validator.ts 可能缓存旧路径引用，需 `rm -rf .next` 后重新构建。
 - **router.replace/push 必须在 useEffect 中调用**：在渲染阶段直接调用 `router.replace()` 或 `router.push()` 会触发 "Cannot update a component while rendering a different component" 错误。导航是 side effect，必须放入 `useEffect` 或事件处理器中，不能放在组件函数体顶层。
 - **useEffect 必须放在所有 early return 之前**：hooks 调用必须每次渲染顺序一致。新增 `useEffect` 时检查是否在 `if (xx) return ...` 之前，否则首次渲染 hook 未调用 → "Rendered more hooks than during the previous render"。
+- **API 409 冲突需前端友好处理**：后端返回 `409` + `body.error`（如 "该题已作答，不可重复提交"），前端 catch 中匹配错误消息，给用户弹提示并执行降级逻辑，不要让错误静默落入 console。

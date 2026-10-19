@@ -116,6 +116,13 @@ function QuizPageContent() {
       }))
       playSFX(res.correct ? '/audio/SUCCESS.mp3' : '/audio/FAIL.wav')
     } catch (err) {
+      const message = err instanceof Error ? err.message : ''
+      if (message === '该题已作答，不可重复提交') {
+        alert('该题已作答，即将跳转下一题')
+        setSubmitting(false)
+        handleNext()
+        return
+      }
       console.error('Submit error:', err)
     } finally {
       setSubmitting(false)
