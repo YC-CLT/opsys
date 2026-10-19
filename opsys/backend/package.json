@@ -1,0 +1,21 @@
+{
+  "name": "backend",
+  "private": true,
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.5",
+    "better-sqlite3": "^11",
+    "hono": "^4",
+    "jsonwebtoken": "^9"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7",
+    "@types/jsonwebtoken": "^9",
+    "tsx": "^4",
+    "typescript": "^5"
+  }
+}

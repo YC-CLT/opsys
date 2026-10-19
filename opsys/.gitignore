@@ -38,4 +38,10 @@ yarn-error.log*
 
 # typescript
 *.tsbuildinfo
+
+# sqlite
+*.db
+
+# backend
+backend/dist/
 next-env.d.ts
