@@ -14,14 +14,14 @@ const quotes = [
 ]
 
 const STORAGE_KEY = 'mascot-position'
+const DEFAULT_POS = { x: 16, y: 16 }
 
-function loadPosition(): { x: number; y: number } {
-  if (typeof window === 'undefined') return { x: 16, y: 16 }
+function loadSavedPosition(): { x: number; y: number } | null {
   try {
     const saved = localStorage.getItem(STORAGE_KEY)
     if (saved) return JSON.parse(saved)
   } catch { /* ignore */ }
-  return { x: 16, y: 16 }
+  return null
 }
 
 function clamp(val: number, min: number, max: number) {
@@ -31,7 +31,7 @@ function clamp(val: number, min: number, max: number) {
 export default function Mascot() {
   const [quote, setQuote] = useState('')
   const [showBubble, setShowBubble] = useState(false)
-  const [position, setPosition] = useState(loadPosition)
+  const [position, setPosition] = useState(DEFAULT_POS)
   const [isDragging, setIsDragging] = useState(false)
 
   const containerRef = useRef<HTMLDivElement>(null)
@@ -43,6 +43,11 @@ export default function Mascot() {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify({ x, y }))
     } catch { /* ignore */ }
+  }, [])
+
+  useEffect(() => {
+    const saved = loadSavedPosition()
+    if (saved) setPosition(saved)
   }, [])
 
   useEffect(() => {
