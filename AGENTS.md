@@ -42,4 +42,13 @@
 6. 记录：调用 writing-agents → 写CHANGELOG.md + 经验教训到AGENTS.md
 7. 提交：调用 finishing-a-development-branch → 分组提交
 
+## OS Challenge 项目 — 经验/坑点
+
+- **Hono 后端需要 @hono/node-server 适配器**：`pnpm add @hono/node-server`，启动用 `serve({ fetch: app.fetch, port })`
+- **better-sqlite3 / esbuild 构建脚本批准**：需 `pnpm approve-builds better-sqlite3 esbuild`
+- **JSX 只能在 .tsx 文件**：hooks 组件文件必须用 `.tsx` 扩展名
+- **端口冲突处理**：`netstat -ano | findstr :3000` → `taskkill /PID xxx /F`
+- **匹配题 answer_json 与 content.pairs**：match 题 answer 就是 left→right 映射，前端可直接从 pairs 推算用于视觉反馈
+- **Tool use**: `cmd-exec-mcp` 的正确工具是 `execute_local`（非 `cmd-executor`）
+
 ## 经验/坑点
