@@ -2,6 +2,7 @@
 
 import { Geist, Geist_Mono } from 'next/font/google'
 import { ModeProvider } from '@/hooks/useModeDetect'
+import { AuthProvider } from '@/hooks/useAuth'
 import KanbanMusume from '@/components/KanbanMusume'
 import './globals.css'
 
@@ -25,10 +26,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)] relative">
         <div className="stars-bg" />
         <ModeProvider>
-          <div className="relative z-10 min-h-screen">
-            {children}
-          </div>
-          <KanbanMusume />
+          <AuthProvider>
+            <div className="relative z-10 min-h-screen">
+              {children}
+            </div>
+            <KanbanMusume />
+          </AuthProvider>
         </ModeProvider>
       </body>
     </html>

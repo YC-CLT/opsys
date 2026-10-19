@@ -1,11 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import FakeTerminal from '@/components/FakeTerminal'
 import { useModeDetect } from '@/hooks/useModeDetect'
 
 export default function Home() {
   const { mode, loading } = useModeDetect()
+  const router = useRouter()
 
   return (
     <main className="min-h-screen flex flex-col items-center justify-center gap-8 px-4 py-16">
@@ -41,10 +43,16 @@ export default function Home() {
           transition={{ delay: 0.6 }}
           className="flex gap-4"
         >
-          <button className="px-8 py-3 rounded-xl bg-accent/20 border border-accent/40 text-accent hover:bg-accent/30 transition-colors font-medium">
+          <button
+            onClick={() => router.push('/login/student')}
+            className="px-8 py-3 rounded-xl bg-accent/20 border border-accent/40 text-accent hover:bg-accent/30 transition-colors font-medium"
+          >
             学生入口
           </button>
-          <button className="px-8 py-3 rounded-xl bg-surface border border-zinc-600/40 text-zinc-300 hover:bg-surface/80 transition-colors font-medium">
+          <button
+            onClick={() => router.push('/login/teacher')}
+            className="px-8 py-3 rounded-xl bg-surface border border-zinc-600/40 text-zinc-300 hover:bg-surface/80 transition-colors font-medium"
+          >
             教师入口
           </button>
         </motion.div>
