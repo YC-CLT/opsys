@@ -12,7 +12,7 @@ wheels/
 mcp_tools_summary.csv
 docs/superpowers/*
 **/node_modules
-**/.next/
+**/.next
 *.db
 *.db-shm
 *.db-wal

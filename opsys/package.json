@@ -5,9 +5,7 @@
     "@types/node": "^20"
   },
   "scripts": {
-    "dev:frontend": "pnpm --filter frontend dev",
-    "dev:backend": "pnpm --filter backend dev",
-    "dev": "pnpm run --parallel dev:frontend dev:backend",
+    "dev": "pnpm -r --parallel dev",
     "build:frontend": "pnpm --filter frontend build",
     "build:backend": "pnpm --filter backend build",
     "lint": "pnpm --filter frontend lint"
