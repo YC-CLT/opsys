@@ -63,6 +63,12 @@ function QuizPageContent() {
     playBGM('/audio/bg1.mp3', 0.3)
   }, [levelId, student])
 
+  useEffect(() => {
+    if (finished) {
+      router.replace(`/student/result?level=${levelId}&correct=${score.correct}&total=${score.total}`)
+    }
+  }, [finished, levelId, score.correct, score.total, router])
+
   const loadQuestions = async () => {
     try {
       setLoading(true)
@@ -110,6 +116,13 @@ function QuizPageContent() {
       }))
       playSFX(res.correct ? '/audio/SUCCESS.mp3' : '/audio/FAIL.wav')
     } catch (err) {
+      const message = err instanceof Error ? err.message : ''
+      if (message === '该题已作答，不可重复提交') {
+        alert('该题已作答，即将跳转下一题')
+        setSubmitting(false)
+        handleNext()
+        return
+      }
       console.error('Submit error:', err)
     } finally {
       setSubmitting(false)
@@ -151,8 +164,6 @@ function QuizPageContent() {
   }
 
   if (finished) {
-    const pct = score.total > 0 ? Math.round((score.correct / score.total) * 100) : 0
-    router.replace(`/student/result?level=${levelId}&correct=${score.correct}&total=${score.total}`)
     return null
   }
 

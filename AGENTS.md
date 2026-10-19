@@ -63,3 +63,4 @@
 - **Next.js 静态预渲染与中文文件名**：`public/` 下的中文文件名（如 `看板娘.png`）在预渲染时触发 ByteString 编码错误。使用 ASCII 文件名（如 `mascot.png`）。
 - **useSearchParams 需 Suspense**：与 useParams 同理，Client Component 中直接使用 useSearchParams() 会阻塞静态预渲染，需要外层 Suspense 包裹。
 - **路由重命名需清 .next 缓存**：移动 App Router 页面目录后，.next/dev/types/validator.ts 可能缓存旧路径引用，需 `rm -rf .next` 后重新构建。
+- **API 409 冲突需前端友好处理**：后端返回 `409` + `body.error`（如 "该题已作答，不可重复提交"），前端 catch 中匹配错误消息，给用户弹提示并执行降级逻辑，不要让错误静默落入 console。

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 const quotes = [
@@ -13,9 +13,37 @@ const quotes = [
   '死锁：大家都在等对方释放资源，结果谁也动不了。',
 ]
 
+const STORAGE_KEY = 'mascot-position'
+
+function loadPosition(): { x: number; y: number } {
+  if (typeof window === 'undefined') return { x: 16, y: 16 }
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY)
+    if (saved) return JSON.parse(saved)
+  } catch { /* ignore */ }
+  return { x: 16, y: 16 }
+}
+
+function clamp(val: number, min: number, max: number) {
+  return Math.max(min, Math.min(max, val))
+}
+
 export default function Mascot() {
   const [quote, setQuote] = useState('')
   const [showBubble, setShowBubble] = useState(false)
+  const [position, setPosition] = useState(loadPosition)
+  const [isDragging, setIsDragging] = useState(false)
+
+  const containerRef = useRef<HTMLDivElement>(null)
+  const dragStart = useRef({ x: 0, y: 0, posX: 0, posY: 0 })
+  const hasMoved = useRef(false)
+
+  const savePosition = useCallback((x: number, y: number) => {
+    setPosition({ x, y })
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ x, y }))
+    } catch { /* ignore */ }
+  }, [])
 
   useEffect(() => {
     const show = () => {
@@ -28,8 +56,69 @@ export default function Mascot() {
     return () => clearInterval(interval)
   }, [])
 
+  const handlePointerDown = (e: React.PointerEvent) => {
+    setIsDragging(true)
+    hasMoved.current = false
+    dragStart.current = {
+      x: e.clientX,
+      y: e.clientY,
+      posX: position.x,
+      posY: position.y,
+    }
+    ;(e.target as HTMLElement).setPointerCapture(e.pointerId)
+  }
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDragging) return
+    const dx = e.clientX - dragStart.current.x
+    const dy = e.clientY - dragStart.current.y
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+      hasMoved.current = true
+    }
+    const vw = window.innerWidth
+    const vh = window.innerHeight
+    const newX = clamp(dragStart.current.posX + dx, 0, vw - 90)
+    const newY = clamp(dragStart.current.posY + dy, 0, vh - 130)
+    setPosition({ x: newX, y: newY })
+  }
+
+  const handlePointerUp = (e: React.PointerEvent) => {
+    setIsDragging(false)
+    ;(e.target as HTMLElement).releasePointerCapture(e.pointerId)
+    savePosition(position.x, position.y)
+  }
+
+  const handleClick = () => {
+    if (hasMoved.current) return
+    setQuote(quotes[Math.floor(Math.random() * quotes.length)])
+    setShowBubble(true)
+    setTimeout(() => setShowBubble(false), 5000)
+  }
+
+  const motionProps = isDragging
+    ? {
+        animate: {
+          rotate: [-3, 3, -5, 5, -3, 3, 0],
+          scaleX: [1, 1.06, 0.94, 1.06, 1],
+          scaleY: [1, 0.94, 1.06, 0.94, 1],
+        },
+        transition: { duration: 0.8, repeat: Infinity, ease: 'easeInOut' as const },
+      }
+    : {
+        animate: {
+          rotate: [0, -5, 5, -3, 3, 0, 0, -4, 4, 0],
+          scaleX: [1, 1, 1.03, 1, 0.97, 1, 1, 1.02, 1, 1],
+          scaleY: [1, 0.97, 1, 1.03, 1, 1, 0.98, 1, 1, 1],
+        },
+        transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' as const },
+      }
+
   return (
-    <div className="fixed bottom-4 left-4 z-50 flex flex-col items-start gap-2">
+    <div
+      ref={containerRef}
+      className="fixed z-50 flex flex-col items-start gap-2 select-none"
+      style={{ left: position.x, bottom: `calc(100vh - ${position.y}px - 130px)` }}
+    >
       <AnimatePresence>
         {showBubble && (
           <motion.div
@@ -45,16 +134,12 @@ export default function Mascot() {
       </AnimatePresence>
 
       <motion.div
-        className="relative cursor-pointer group"
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        animate={{ scale: [1, 1.03, 1] }}
-        transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-        onClick={() => {
-          setQuote(quotes[Math.floor(Math.random() * quotes.length)])
-          setShowBubble(true)
-          setTimeout(() => setShowBubble(false), 5000)
-        }}
+        className="relative cursor-grab active:cursor-grabbing"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onClick={handleClick}
+        {...motionProps}
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -62,7 +147,8 @@ export default function Mascot() {
           alt="OS Challenge 吉祥物"
           width={80}
           height={100}
-          className="object-contain"
+          className="object-contain pointer-events-none"
+          draggable={false}
           onError={(e) => {
             const t = e.currentTarget
             t.style.display = 'none'
