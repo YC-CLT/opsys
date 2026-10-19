@@ -52,3 +52,8 @@
 - **Tool use**: `cmd-exec-mcp` 的正确工具是 `execute_local`（非 `cmd-executor`）
 
 ## 经验/坑点
+
+- **R3F v9 `<bufferAttribute>` 需 `args`**：R3F v9 的 `bufferAttribute` 强制要求 `args` prop。避免用声明式，改用 `useMemo` 内 `new THREE.BufferGeometry()` + `setAttribute()`，然后直接传 `geometry={geo}` 或 `<primitive object={}>`。
+- **R3F `<line>` 与 SVG `<line>` 冲突**：JSX 中 `<line>` 被 TypeScript 解析为 SVG 元素，不接受 `geometry` prop。必须预先创建 `THREE.Line` 对象，用 `<primitive object={lineObj} />` 渲染。
+- **Next.js Client Component `useParams()` 需 `<Suspense>`**：在 `'use client'` 组件中直接使用 `useParams()` 会阻塞 `next build` 的静态预渲染。拆分为内层组件 + 外层 `<Suspense>` 包裹。
+- **three.js 内置类型**：three@0.137 起自带 `.d.ts`，无需单独安装 `@types/three`。
