@@ -2,54 +2,13 @@
 
 import { useRef, useMemo } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Text3D, Float } from '@react-three/drei'
+import { OrbitControls, Float } from '@react-three/drei'
 import * as THREE from 'three'
 import MemoryScene from './MemoryScene'
-
-function OSStack() {
-  const groupRef = useRef<THREE.Group>(null)
-  const layers = [
-    { name: '用户', y: 2.5, color: '#4ade80', w: 3.2 },
-    { name: '应用程序', y: 1.5, color: '#60a5fa', w: 3.0 },
-    { name: 'OS 内核', y: 0.5, color: '#f472b6', w: 3.4 },
-    { name: '硬件', y: -0.5, color: '#fbbf24', w: 2.8 },
-  ]
-
-  useFrame((_, delta) => {
-    if (groupRef.current) groupRef.current.rotation.y += delta * 0.2
-  })
-
-  const glowMaterial = useMemo(() => new THREE.MeshStandardMaterial({
-    color: '#00ff88',
-    emissive: '#00ff88',
-    emissiveIntensity: 0.4,
-    metalness: 0.2,
-    roughness: 0.5,
-    transparent: true,
-    opacity: 0.85,
-  }), [])
-
-  return (
-    <group ref={groupRef}>
-      {layers.map((l, i) => (
-        <Float key={i} speed={1.5} rotationIntensity={0.05} floatIntensity={0.001} position={[0, l.y, 0]}>
-          <mesh>
-            <boxGeometry args={[l.w, 0.7, 1.2]} />
-            <meshStandardMaterial
-              color={l.color}
-              emissive={l.color}
-              emissiveIntensity={0.3 + i * 0.1}
-              metalness={0.3}
-              roughness={0.4}
-              transparent
-              opacity={0.8}
-            />
-          </mesh>
-        </Float>
-      ))}
-    </group>
-  )
-}
+import OSLayersScene from './OSLayersScene'
+import ConcurrencyScene from './ConcurrencyScene'
+import InterruptScene from './InterruptScene'
+import KernelScene from './KernelScene'
 
 function OSEvolution() {
   const ringRef = useRef<THREE.Group>(null)
@@ -102,40 +61,13 @@ function OSEvolution() {
         <primitive key={`l-${i}`} object={obj} />
       ))}
     </group>
-  )
-}
-
-function ConcurrencyParallel() {
-  const gBallRef = useRef<THREE.Mesh>(null)
-  const yBallRef = useRef<THREE.Mesh>(null)
-  const timeRef = useRef(0)
-
-  useFrame((_, delta) => {
-    timeRef.current += delta
-    const t = timeRef.current
-    if (gBallRef.current) gBallRef.current.position.x = Math.sin(t * 2.5) * 1.8
-    if (yBallRef.current) yBallRef.current.position.x = Math.sin(t * 2.5 + Math.PI) * 1.8
-  })
-
-  return (
-    <group>
-      <mesh ref={gBallRef} position={[0, 0.4, 0]}>
-        <sphereGeometry args={[0.35, 32, 32]} />
-        <meshStandardMaterial color="#4ade80" emissive="#4ade80" emissiveIntensity={0.6} metalness={0.2} roughness={0.2} />
-      </mesh>
-      <mesh ref={yBallRef} position={[0, -0.4, 0]}>
-        <sphereGeometry args={[0.35, 32, 32]} />
-        <meshStandardMaterial color="#facc15" emissive="#facc15" emissiveIntensity={0.6} metalness={0.2} roughness={0.2} />
-      </mesh>
-    </group>
-  )
-}
+  )}
 
 function CombinedLevel3() {
   return (
     <group>
       <group position={[-1.2, 0, 0]}>
-        <ConcurrencyParallel />
+        <ConcurrencyScene />
       </group>
       <group position={[1.2, 0, 0]}>
         <MemoryScene />
@@ -144,26 +76,15 @@ function CombinedLevel3() {
   )
 }
 
-function InterruptKernelMode() {
-  const ringRef = useRef<THREE.Mesh>(null)
-
-  useFrame((_, delta) => {
-    if (ringRef.current) {
-      ringRef.current.rotation.y += delta * 1.2
-      ringRef.current.scale.setScalar(1 + Math.sin(Date.now() * 0.005) * 0.08)
-    }
-  })
-
+function CombinedLevel4() {
   return (
     <group>
-      <mesh ref={ringRef}>
-        <torusGeometry args={[1.2, 0.15, 16, 32]} />
-        <meshStandardMaterial color="#f472b6" emissive="#f472b6" emissiveIntensity={0.8} metalness={0.3} roughness={0.2} />
-      </mesh>
-      <mesh>
-        <sphereGeometry args={[0.4, 32, 32]} />
-        <meshStandardMaterial color="#60a5fa" emissive="#60a5fa" emissiveIntensity={0.5} metalness={0.1} roughness={0.3} />
-      </mesh>
+      <group position={[-1.2, 0, 0]}>
+        <KernelScene />
+      </group>
+      <group position={[1.2, 0, 0]}>
+        <InterruptScene />
+      </group>
     </group>
   )
 }
@@ -250,13 +171,13 @@ function PentagonRadar() {
 
 function SceneContent({ levelId }: { levelId: number }) {
   switch (levelId) {
-    case 1: return <OSStack />
+    case 1: return <OSLayersScene />
     case 2: return <OSEvolution />
     case 3: return <CombinedLevel3 />
-    case 4: return <InterruptKernelMode />
+    case 4: return <CombinedLevel4 />
     case 5: return <OSStructure />
     case 6: return <PentagonRadar />
-    default: return <OSStack />
+    default: return <OSLayersScene />
   }
 }
 

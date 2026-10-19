@@ -2,14 +2,14 @@
 
 import { motion, AnimatePresence } from 'framer-motion'
 
-interface QuizFeedbackProps {
+interface QuizResultProps {
   correct: boolean
   explanation: string
   onNext: () => void
   visible: boolean
 }
 
-export default function QuizFeedback({ correct, explanation, onNext, visible }: QuizFeedbackProps) {
+export default function QuizResult({ correct, explanation, onNext, visible }: QuizResultProps) {
   return (
     <AnimatePresence>
       {visible && (

@@ -9,7 +9,7 @@ import { apiFetch } from '@/lib/api'
 import ChoiceQuiz from '@/components/quiz/ChoiceQuiz'
 import JudgeQuiz from '@/components/quiz/JudgeQuiz'
 import MatchQuiz from '@/components/quiz/MatchQuiz'
-import QuizFeedback from '@/components/quiz/QuizFeedback'
+import QuizResult from '@/components/quiz/QuizResult'
 import Terminal from '@/components/ui/Terminal'
 import { useAudio } from '@/components/ui/AudioProvider'
 
@@ -226,7 +226,7 @@ function QuizPageContent() {
       </AnimatePresence>
 
       <div className="w-full max-w-2xl">
-        <QuizFeedback
+        <QuizResult
           correct={result?.correct || false}
           explanation={result?.explanation || ''}
           onNext={handleNext}

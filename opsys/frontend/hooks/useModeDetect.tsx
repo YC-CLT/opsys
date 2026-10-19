@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, createContext, useContext } from 'react'
-import { detectMode, getStoredMode, setStoredMode, type AppMode } from '@/lib/api'
+import { detectMode, getStoredMode, setStoredMode, type AppMode } from '@/lib/mode'
 
 interface ModeContextValue {
   mode: AppMode | null

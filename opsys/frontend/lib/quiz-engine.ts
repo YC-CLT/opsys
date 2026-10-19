@@ -11,10 +11,9 @@ let questionMap: Map<string, Question> | null = null
 
 async function loadQuestions(): Promise<Map<string, Question>> {
   if (questionMap) return questionMap
-  const res = await fetch('/data/questions.json')
-  const data = await res.json()
+  const data = await import('../data/questions.json')
   questionMap = new Map()
-  for (const q of data.questions) {
+  for (const q of (data as any).questions) {
     questionMap.set(q.id, q)
   }
   return questionMap
