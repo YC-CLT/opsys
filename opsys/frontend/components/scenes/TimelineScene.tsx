@@ -84,8 +84,8 @@ function MilestoneNode({ milestone, index }: { milestone: typeof MILESTONES[0]; 
 
 export default function TimelineScene() {
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-      <Canvas camera={{ position: [0, 0, 7], fov: 50 }}>
+    <div className="fixed inset-0 z-0 pointer-events-none opacity-20">
+      <Canvas camera={{ position: [0, 0, 7], fov: 50 }} style={{ pointerEvents: 'none' }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[0, 3, 3]} intensity={0.8} color="#a78bfa" />
         <TimelineLine />

@@ -94,8 +94,8 @@ function TransitionArrow() {
 
 export default function SyscallScene() {
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-      <Canvas camera={{ position: [0, 0, 6], fov: 50 }}>
+    <div className="fixed inset-0 z-0 pointer-events-none opacity-20">
+      <Canvas camera={{ position: [0, 0, 6], fov: 50 }} style={{ pointerEvents: 'none' }}>
         <ambientLight intensity={0.5} />
         <pointLight position={[0, 0, 3]} intensity={0.5} color="#a78bfa" />
 

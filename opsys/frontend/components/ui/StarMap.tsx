@@ -2,7 +2,7 @@
 
 import { useRef, useState, useMemo } from 'react'
 import { Canvas, useFrame, type ThreeEvent } from '@react-three/fiber'
-import { Text, Float } from '@react-three/drei'
+import { Text, Float, OrbitControls } from '@react-three/drei'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
 
@@ -70,7 +70,7 @@ function Node({
           onPointerOver={() => setHovered(true)}
           onPointerOut={() => setHovered(false)}
         >
-          <icosahedronGeometry args={[hovered ? 0.4 : 0.3, 1]} />
+          <icosahedronGeometry args={[hovered ? 0.4 : 0.3, 0]} />
           <meshStandardMaterial
             color={unlocked ? level.color : '#444'}
             emissive={unlocked ? level.color : '#111'}
@@ -190,6 +190,7 @@ export default function StarMap({ progress, onSelectLevel }: StarMapProps) {
         <pointLight position={[0, 5, 5]} intensity={1} color="#a78bfa" />
         <pointLight position={[0, -5, -5]} intensity={0.5} color="#6366f1" />
         <pointLight position={[4, 0, 2]} intensity={0.3} color="#c084fc" />
+        <OrbitControls enableZoom={false} enablePan={false} />
 
         <StarField />
         <ConnectionLines progress={progress} />

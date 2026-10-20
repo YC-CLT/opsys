@@ -135,10 +135,10 @@ export default function ParticleField({ mode = 'idle' }: ParticleFieldProps) {
   }, [])
 
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none">
+    <div className="fixed inset-0 z-0 pointer-events-none opacity-15">
       <Canvas
         camera={{ position: [0, 0, 8], fov: 60 }}
-        style={{ width: canvasSize.width, height: canvasSize.height }}
+        style={{ width: canvasSize.width, height: canvasSize.height, pointerEvents: 'none' }}
         gl={{ alpha: true, antialias: false }}
       >
         <ambientLight intensity={0.5} />

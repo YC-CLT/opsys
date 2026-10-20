@@ -73,8 +73,8 @@ function ArchNode({ arch, index }: { arch: typeof ARCHITECTURES[0]; index: numbe
 
 export default function ArchitectureScene() {
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none opacity-40">
-      <Canvas camera={{ position: [0, 0, 7], fov: 50 }}>
+    <div className="fixed inset-0 z-0 pointer-events-none opacity-20">
+      <Canvas camera={{ position: [0, 0, 7], fov: 50 }} style={{ pointerEvents: 'none' }}>
         <ambientLight intensity={0.4} />
         <pointLight position={[0, 3, 4]} intensity={0.6} color="#a78bfa" />
         {ARCHITECTURES.map((arch, i) => (
