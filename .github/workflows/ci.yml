@@ -3,8 +3,12 @@ name: OPSys CI
 on:
   push:
     branches: [main]
+    paths:
+      - 'opsys/**'
   pull_request:
     branches: [main]
+    paths:
+      - 'opsys/**'
 
 jobs:
   lint-typecheck:
