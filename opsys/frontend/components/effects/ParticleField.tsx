@@ -113,7 +113,6 @@ function Particles({ mode = 'idle' }: { mode: ParticleMode }) {
           color={p.color}
           anchorX="center"
           anchorY="middle"
-          font="/fonts/GeistMono-Regular.woff2"
           fillOpacity={0.6}
         >
           {p.label}

@@ -211,7 +211,6 @@ export default function StarMap({ progress, onSelectLevel }: StarMapProps) {
                 anchorX="center"
                 anchorY="middle"
                 fillOpacity={0.7}
-                font="/fonts/GeistMono-Regular.woff2"
               >
                 {'> NEXT <'}
               </Text>
