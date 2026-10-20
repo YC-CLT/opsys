@@ -56,11 +56,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const loginStudent = useCallback(async (studentId: string, name: string) => {
-    const res = await apiFetch<{ token: string; progress: number[] }>('/api/auth/student', {
-      method: 'POST',
-      body: JSON.stringify({ studentId, name }),
-    })
-    const auth: StudentAuth = { token: res.token, studentId, name, progress: res.progress }
+    const isStatic = process.env.NEXT_PUBLIC_MODE === 'static'
+
+    let progress: number[] = []
+    let token = ''
+
+    if (isStatic) {
+      token = `static-${studentId}-${Date.now()}`
+    } else {
+      const res = await apiFetch<{ token: string; progress: number[] }>('/api/auth/student', {
+        method: 'POST',
+        body: JSON.stringify({ studentId, name }),
+      })
+      token = res.token
+      progress = res.progress
+    }
+
+    const auth: StudentAuth = { token, studentId, name, progress }
     localStorage.setItem(TOKEN_KEY, JSON.stringify(auth))
     setStudent(auth)
     setTeacher(null)

@@ -222,11 +222,6 @@ function TerminalOverlay() {
                     spellCheck={false}
                     autoComplete="off"
                   />
-                  <motion.span
-                    className="inline-block w-2 h-3 bg-green-400 ml-0.5"
-                    animate={{ opacity: [1, 0] }}
-                    transition={{ duration: 0.6, repeat: Infinity }}
-                  />
                 </div>
               </div>
             </div>
