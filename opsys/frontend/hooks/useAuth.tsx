@@ -2,6 +2,7 @@
 
 import { useState, useEffect, createContext, useContext, useCallback } from 'react'
 import { apiFetch } from '@/lib/api'
+import { getStaticProgress, setStaticProgress } from '@/lib/staticStore'
 
 interface StudentAuth {
   token: string
@@ -23,6 +24,7 @@ const AuthContext = createContext<{
   loginStudent: (studentId: string, name: string) => Promise<void>
   loginTeacher: (password: string) => Promise<void>
   logout: () => void
+  updateProgress: (levelId: number) => void
   loading: boolean
 }>({
   student: null,
@@ -30,6 +32,7 @@ const AuthContext = createContext<{
   loginStudent: async () => {},
   loginTeacher: async () => {},
   logout: () => {},
+  updateProgress: () => {},
   loading: true,
 })
 
@@ -56,26 +59,36 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const loginStudent = useCallback(async (studentId: string, name: string) => {
-    const isStatic = process.env.NEXT_PUBLIC_MODE === 'static'
-
     let progress: number[] = []
     let token = ''
 
-    if (isStatic) {
-      token = `static-${studentId}-${Date.now()}`
-    } else {
+    try {
       const res = await apiFetch<{ token: string; progress: number[] }>('/api/auth/student', {
         method: 'POST',
         body: JSON.stringify({ studentId, name }),
       })
       token = res.token
       progress = res.progress
+    } catch {
+      token = `static-${studentId}-${Date.now()}`
+      progress = getStaticProgress()
     }
 
     const auth: StudentAuth = { token, studentId, name, progress }
     localStorage.setItem(TOKEN_KEY, JSON.stringify(auth))
     setStudent(auth)
     setTeacher(null)
+  }, [])
+
+  const updateProgress = useCallback((levelId: number) => {
+    setStudent((prev) => {
+      if (!prev) return prev
+      const next = prev.progress.includes(levelId) ? prev.progress : [...prev.progress, levelId]
+      const auth = { ...prev, progress: next }
+      localStorage.setItem(TOKEN_KEY, JSON.stringify(auth))
+      setStaticProgress(next)
+      return auth
+    })
   }, [])
 
   const loginTeacher = useCallback(async (password: string) => {
@@ -96,7 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   return (
-    <AuthContext.Provider value={{ student, teacher, loginStudent, loginTeacher, logout, loading }}>
+    <AuthContext.Provider value={{ student, teacher, loginStudent, loginTeacher, logout, updateProgress, loading }}>
       {children}
     </AuthContext.Provider>
   )

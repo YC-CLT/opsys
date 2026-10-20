@@ -1,8 +1,9 @@
 'use client'
 
-import { Suspense } from 'react'
+import { Suspense, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
+import { useAuth } from '@/hooks/useAuth'
 
 const LEVEL_NAMES = ['', '第一章·引论', '发展历程', '基本特性', '运行环境', '体系结构', '系统调用']
 const MAX_LEVEL = 6
@@ -10,6 +11,7 @@ const MAX_LEVEL = 6
 function ResultContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { updateProgress } = useAuth()
 
   const levelId = parseInt(searchParams.get('level') || '1')
   const correct = parseInt(searchParams.get('correct') || '0')
@@ -17,6 +19,12 @@ function ResultContent() {
   const pct = total > 0 ? Math.round((correct / total) * 100) : 0
   const passed = pct >= 60
   const isLastLevel = levelId >= MAX_LEVEL
+
+  useEffect(() => {
+    if (passed) {
+      updateProgress(levelId)
+    }
+  }, [passed, levelId, updateProgress])
 
   const emoji = isLastLevel && passed ? '🎉' : pct >= 80 ? '🌟' : pct >= 60 ? '⭐' : '📚'
 
