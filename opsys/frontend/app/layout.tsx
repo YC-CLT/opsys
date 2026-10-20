@@ -40,6 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="min-h-screen bg-[var(--background)] text-[var(--foreground)] relative">
         <div className="stars-bg" />
+        <div className="nebula-bg" />
         <RootProvider>
           <div className="relative z-10 min-h-screen">
             {children}
