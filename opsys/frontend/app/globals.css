@@ -157,3 +157,12 @@ body {
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
 }
+
+/* Immersive mode: hide stars/nebula, subtle dark bg for 3D scenes */
+body.immersive {
+  background: linear-gradient(135deg, #0a0a1a 0%, #111133 50%, #0a0a1a 100%);
+}
+body.immersive .stars-bg,
+body.immersive .nebula-bg {
+  display: none;
+}

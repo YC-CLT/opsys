@@ -17,6 +17,7 @@ interface AudioContextValue {
   bgmTracks: string[]
   playNextBGM: () => void
   playPrevBGM: () => void
+  setBgmVolume: (v: number) => void
 }
 
 const AudioContext = createContext<AudioContextValue>({
@@ -33,6 +34,7 @@ const AudioContext = createContext<AudioContextValue>({
   bgmTracks: [],
   playNextBGM: () => {},
   playPrevBGM: () => {},
+  setBgmVolume: () => {},
 })
 
 const STORAGE_KEYS = {
@@ -53,6 +55,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const bgmRef = useRef<HTMLAudioElement | null>(null)
   const sfxPool = useRef<Set<HTMLAudioElement>>(new Set())
   const bgmVolumeRef = useRef<number>(1)
+  const [bgmVolumeState, setBgmVolumeState] = useState(1)
   const currentSrcRef = useRef<string | null>(null)
   const bgmEnabledRef = useRef(true)
   const [bgmEnabled, setBgmEnabledState] = useState(true)
@@ -151,6 +154,15 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     })
   }, [playBGM])
 
+  const setBgmVolume = useCallback((v: number) => {
+    const clamped = Math.max(0, Math.min(1, v))
+    setBgmVolumeState(clamped)
+    bgmVolumeRef.current = clamped
+    if (bgmRef.current) {
+      bgmRef.current.volume = volume * clamped
+    }
+  }, [volume])
+
   const playSFX = useCallback((src: string) => {
     if (!sfxEnabled) return
     const audio = new Audio(src)
@@ -175,7 +187,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   }, [playSFX])
 
   return (
-    <AudioContext.Provider value={{ bgmEnabled, sfxEnabled, volume, toggleBGM, toggleSFX, setVolume, playBGM, stopBGM, playSFX, bgmTrackIndex, bgmTracks: BGM_TRACKS, playNextBGM, playPrevBGM }}>
+    <AudioContext.Provider value={{ bgmEnabled, sfxEnabled, volume, toggleBGM, toggleSFX, setVolume, playBGM, stopBGM, playSFX, bgmTrackIndex, bgmTracks: BGM_TRACKS, playNextBGM, playPrevBGM, setBgmVolume }}>
       {children}
     </AudioContext.Provider>
   )

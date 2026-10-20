@@ -83,8 +83,8 @@ export default function Mascot() {
     }
     const vw = window.innerWidth
     const vh = window.innerHeight
-    const newX = clamp(dragStart.current.posX + dx, 0, vw - 90)
-    const newY = clamp(dragStart.current.posY + dy, 0, vh - 130)
+    const newX = clamp(dragStart.current.posX + dx, 0, vw - 140)
+    const newY = clamp(dragStart.current.posY + dy, 0, vh - 180)
     setPosition({ x: newX, y: newY })
   }
 
@@ -123,7 +123,7 @@ export default function Mascot() {
     <div
       ref={containerRef}
       className="fixed z-50 flex flex-col items-start gap-2 select-none"
-      style={{ left: position.x, bottom: `calc(100vh - ${position.y}px - 130px)` }}
+      style={{ left: position.x, bottom: `calc(100vh - ${position.y}px - 180px)` }}
     >
       <AnimatePresence>
         {showBubble && (
@@ -151,8 +151,8 @@ export default function Mascot() {
         <img
           src={asset('/img/mascot.png')}
           alt="OS Challenge 吉祥物"
-          width={80}
-          height={100}
+          width={120}
+          height={150}
           className="object-contain pointer-events-none"
           draggable={false}
           onError={(e) => {

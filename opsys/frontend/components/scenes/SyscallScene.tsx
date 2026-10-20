@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Text, Float } from '@react-three/drei'
+import { Text, Float, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 
 function RingLayer({
@@ -92,10 +92,14 @@ function TransitionArrow() {
   )
 }
 
-export default function SyscallScene() {
+export default function SyscallScene({ bgOnly }: { bgOnly?: boolean }) {
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none opacity-20">
-      <Canvas camera={{ position: [0, 0, 6], fov: 50 }} style={{ pointerEvents: 'none' }}>
+    <div className={`fixed inset-0 z-0 ${bgOnly ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-20'}`}>
+      <Canvas
+        camera={{ position: [0, 0, 6], fov: 50 }}
+        gl={{ alpha: true }}
+        style={{ pointerEvents: bgOnly ? 'auto' : 'none' }}
+      >
         <ambientLight intensity={0.5} />
         <pointLight position={[0, 0, 3]} intensity={0.5} color="#a78bfa" />
 
@@ -138,6 +142,18 @@ export default function SyscallScene() {
         </mesh>
 
         <TransitionArrow />
+        {bgOnly && (
+          <OrbitControls
+            enableDamping
+            dampingFactor={0.08}
+            autoRotate
+            autoRotateSpeed={0.3}
+            minDistance={3}
+            maxDistance={15}
+            enableZoom={true}
+            enablePan={true}
+          />
+        )}
       </Canvas>
     </div>
   )

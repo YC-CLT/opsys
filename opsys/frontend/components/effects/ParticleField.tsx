@@ -55,6 +55,7 @@ type ParticleMode = 'idle' | 'gather' | 'scatter' | 'shiftLeft'
 
 interface ParticleFieldProps {
   mode?: ParticleMode
+  bgOnly?: boolean
 }
 
 function Particles({ mode = 'idle' }: { mode: ParticleMode }) {
@@ -119,7 +120,7 @@ function Particles({ mode = 'idle' }: { mode: ParticleMode }) {
   )
 }
 
-export default function ParticleField({ mode = 'idle' }: ParticleFieldProps) {
+export default function ParticleField({ mode = 'idle', bgOnly }: ParticleFieldProps) {
   const [canvasSize, setCanvasSize] = useState({ width: 800, height: 600 })
 
   useEffect(() => {
@@ -132,10 +133,10 @@ export default function ParticleField({ mode = 'idle' }: ParticleFieldProps) {
   }, [])
 
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none opacity-15">
+    <div className={`fixed inset-0 z-0 ${bgOnly ? 'pointer-events-auto opacity-40' : 'pointer-events-none opacity-15'}`}>
       <Canvas
         camera={{ position: [0, 0, 8], fov: 60 }}
-        style={{ width: canvasSize.width, height: canvasSize.height, pointerEvents: 'none' }}
+        style={{ width: canvasSize.width, height: canvasSize.height, pointerEvents: bgOnly ? 'auto' : 'none' }}
         gl={{ alpha: true, antialias: false }}
       >
         <ambientLight intensity={0.5} />

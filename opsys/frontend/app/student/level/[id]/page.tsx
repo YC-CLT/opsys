@@ -18,12 +18,13 @@ import type { ParticleMode } from '@/components/effects/ParticleField'
 import TimelineScene from '@/components/scenes/TimelineScene'
 import ArchitectureScene from '@/components/scenes/ArchitectureScene'
 import SyscallScene from '@/components/scenes/SyscallScene'
+import VisualScene from '@/components/scenes/VisualScene'
 
 function QuizPageContent() {
   const params = useParams()
   const router = useRouter()
   const { student, loading: authLoading } = useAuth()
-  const { playSFX } = useAudio()
+  const { playSFX, setBgmVolume } = useAudio()
   const { toast } = useToast()
 
   const levelId = parseInt(params.id as string)
@@ -70,6 +71,20 @@ function QuizPageContent() {
       router.replace(`/student/result?level=${levelId}&correct=${totalCorrect}&total=${questions.length}`)
     }
   }, [finished, levelId, score.correct, questions.length, router])
+
+  useEffect(() => {
+    setBgmVolume(0.5)
+    return () => setBgmVolume(1)
+  }, [setBgmVolume])
+
+  useEffect(() => {
+    if (bgOnly) {
+      document.body.classList.add('immersive')
+    } else {
+      document.body.classList.remove('immersive')
+    }
+    return () => document.body.classList.remove('immersive')
+  }, [bgOnly])
 
   const currentQuestion = questions[currentIndex]
 
@@ -196,11 +211,14 @@ function QuizPageContent() {
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4 py-8 gap-6">
-      <ParticleField mode={particleMode} />
-      {levelId === 2 && <TimelineScene />}
-      {levelId === 5 && <ArchitectureScene />}
-      {levelId === 6 && <SyscallScene />}
-      <div className="w-full max-w-2xl flex items-center justify-between">
+      <ParticleField mode={particleMode} bgOnly={bgOnly} />
+      {levelId === 1 && <VisualScene levelId={1} bgOnly={bgOnly} />}
+      {levelId === 2 && <TimelineScene bgOnly={bgOnly} />}
+      {levelId === 3 && <VisualScene levelId={3} bgOnly={bgOnly} />}
+      {levelId === 4 && <VisualScene levelId={4} bgOnly={bgOnly} />}
+      {levelId === 5 && <ArchitectureScene bgOnly={bgOnly} />}
+      {levelId === 6 && <SyscallScene bgOnly={bgOnly} />}
+      <div className="w-full max-w-2xl flex items-center justify-between relative z-10">
         <button
           onClick={() => router.push('/student/dashboard')}
           className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"

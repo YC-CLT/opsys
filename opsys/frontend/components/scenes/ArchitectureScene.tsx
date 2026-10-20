@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Text, Float } from '@react-three/drei'
+import { Text, Float, OrbitControls } from '@react-three/drei'
 import * as THREE from 'three'
 
 const ARCHITECTURES = [
@@ -71,10 +71,14 @@ function ArchNode({ arch, index }: { arch: typeof ARCHITECTURES[0]; index: numbe
   )
 }
 
-export default function ArchitectureScene() {
+export default function ArchitectureScene({ bgOnly }: { bgOnly?: boolean }) {
   return (
-    <div className="fixed inset-0 z-0 pointer-events-none opacity-20">
-      <Canvas camera={{ position: [0, 0, 7], fov: 50 }} style={{ pointerEvents: 'none' }}>
+    <div className={`fixed inset-0 z-0 ${bgOnly ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-20'}`}>
+      <Canvas
+        camera={{ position: [0, 0, 7], fov: 50 }}
+        gl={{ alpha: true }}
+        style={{ pointerEvents: bgOnly ? 'auto' : 'none' }}
+      >
         <ambientLight intensity={0.4} />
         <pointLight position={[0, 3, 4]} intensity={0.6} color="#a78bfa" />
         {ARCHITECTURES.map((arch, i) => (
@@ -91,6 +95,18 @@ export default function ArchitectureScene() {
             OS 内核架构演进
           </Text>
         </Float>
+        {bgOnly && (
+          <OrbitControls
+            enableDamping
+            dampingFactor={0.08}
+            autoRotate
+            autoRotateSpeed={0.3}
+            minDistance={3}
+            maxDistance={15}
+            enableZoom={true}
+            enablePan={true}
+          />
+        )}
       </Canvas>
     </div>
   )
