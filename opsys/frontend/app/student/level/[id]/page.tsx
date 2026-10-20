@@ -10,6 +10,7 @@ import JudgeQuiz from '@/components/quiz/JudgeQuiz'
 import MatchQuiz from '@/components/quiz/MatchQuiz'
 import QuizResult from '@/components/quiz/QuizResult'
 import { useAudio } from '@/components/ui/AudioProvider'
+import { asset } from '@/lib/asset-path'
 import { useToast } from '@/components/ui/Toast'
 import { getStaticRecords } from '@/lib/staticStore'
 import ParticleField from '@/components/effects/ParticleField'
@@ -97,7 +98,7 @@ function QuizPageContent() {
         total: prev.total + 1,
       }))
       updateQuestionStatus(currentIndex, res.correct ? 'correct' : 'wrong')
-      playSFX(res.correct ? '/audio/SUCCESS.mp3' : '/audio/FAIL.wav')
+      playSFX(res.correct ? asset('/audio/SUCCESS.mp3') : asset('/audio/FAIL.wav'))
       setParticleMode(res.correct ? 'gather' : 'scatter')
       setTimeout(() => setParticleMode('idle'), 1500)
     } catch (err) {

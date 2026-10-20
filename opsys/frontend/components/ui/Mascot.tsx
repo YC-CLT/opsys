@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { asset } from '@/lib/asset-path'
 
 const quotes = [
   '并发是逻辑上同时发生，并行是物理上同时发生。',
@@ -148,7 +149,7 @@ export default function Mascot() {
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/img/mascot.png"
+          src={asset('/img/mascot.png')}
           alt="OS Challenge 吉祥物"
           width={80}
           height={100}

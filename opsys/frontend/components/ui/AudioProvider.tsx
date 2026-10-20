@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback, createContext, useContext } from 'react'
+import { asset } from '@/lib/asset-path'
 
 interface AudioContextValue {
   bgmEnabled: boolean
@@ -41,11 +42,11 @@ const STORAGE_KEYS = {
 }
 
 const BGM_TRACKS = [
-  '/audio/bg1.mp3',
-  '/audio/bg2.mp3',
-  '/audio/bg3.mp3',
-  '/audio/bg4.mp3',
-  '/audio/bg5.mp3',
+  asset('/audio/bg1.mp3'),
+  asset('/audio/bg2.mp3'),
+  asset('/audio/bg3.mp3'),
+  asset('/audio/bg4.mp3'),
+  asset('/audio/bg5.mp3'),
 ]
 
 export function AudioProvider({ children }: { children: React.ReactNode }) {
@@ -166,7 +167,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     const handler = (e: MouseEvent) => {
       const target = e.target as HTMLElement
       if (target.tagName === 'BUTTON' || target.tagName === 'A' || target.closest('button') || target.closest('a')) {
-        playSFX('/audio/click.wav')
+        playSFX(asset('/audio/click.wav'))
       }
     }
     document.addEventListener('click', handler)

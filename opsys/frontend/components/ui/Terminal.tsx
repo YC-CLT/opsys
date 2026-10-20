@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion } from 'framer-motion'
 import { useAudio } from '@/components/ui/AudioProvider'
+import { asset } from '@/lib/asset-path'
 import { useRouter } from 'next/navigation'
 import { executeCommand, type CommandContext } from '@/lib/terminal-commands'
 import { useAuth } from '@/hooks/useAuth'
@@ -60,7 +61,7 @@ export default function Terminal({ onEnterLevel, userName, studentId }: Terminal
   useEffect(() => {
     if (bootPhase === 'booting') {
       if (!hasPlayedAudio.current) {
-        playSFX('/audio/InitTerminal.wav')
+        playSFX(asset('/audio/InitTerminal.wav'))
         hasPlayedAudio.current = true
       }
       if (bootIndex >= BOOT_SEQUENCE.length) {

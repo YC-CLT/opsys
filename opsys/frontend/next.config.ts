@@ -22,6 +22,7 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_MODE: process.env.NEXT_PUBLIC_MODE || 'live',
     NEXT_PUBLIC_HASH_FILE: '/data/question-hashes.json',
+    NEXT_PUBLIC_BASE_PATH: isStatic ? '/opsys' : '',
   },
 };
 

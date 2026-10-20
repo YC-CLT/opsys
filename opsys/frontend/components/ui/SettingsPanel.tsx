@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAudio } from '@/components/ui/AudioProvider'
+import { asset } from '@/lib/asset-path'
 
 export default function SettingsPanel() {
   const { bgmEnabled, sfxEnabled, volume, toggleBGM, toggleSFX, setVolume, playSFX, bgmTrackIndex, bgmTracks, playNextBGM, playPrevBGM } = useAudio()
@@ -11,7 +12,7 @@ export default function SettingsPanel() {
   const handleOpen = () => {
     setOpen(!open)
     if (!open) {
-      playSFX('/audio/SettingsUI.mp3')
+      playSFX(asset('/audio/SettingsUI.mp3'))
     }
   }
 
@@ -85,7 +86,7 @@ export default function SettingsPanel() {
                       ⏮
                     </button>
                     <span className="text-xs text-zinc-400 font-mono truncate max-w-[140px]">
-                      {bgmTracks[bgmTrackIndex] ? bgmTracks[bgmTrackIndex].replace('/audio/', '').replace('.mp3', '') : '-'}
+                      {bgmTracks[bgmTrackIndex] ? bgmTracks[bgmTrackIndex].split('/').pop()?.replace('.mp3', '') : '-'}
                     </span>
                     <button
                       onClick={playNextBGM}
