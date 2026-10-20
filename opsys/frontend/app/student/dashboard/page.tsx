@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic'
 import { useAuth } from '@/hooks/useAuth'
 import { useAudio } from '@/components/ui/AudioProvider'
 import Terminal from '@/components/ui/Terminal'
+import AudioSettings from '@/components/ui/AudioSettings'
 
 const StarMap = dynamic(() => import('@/components/ui/StarMap'), { ssr: false })
 
@@ -122,6 +123,8 @@ export default function StudentDashboard() {
       >
         <Terminal userName={student.name} studentId={student.studentId} />
       </motion.div>
+
+      <AudioSettings />
     </main>
   )
 }

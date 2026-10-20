@@ -125,13 +125,27 @@ docker compose up -d
 |----|------|
 | 前端框架 | Next.js 16 + React 19 |
 | 3D 渲染 | Three.js + @react-three/fiber + @react-three/drei |
-| 动画 | Framer Motion |
+| 后处理 | @react-three/postprocessing (Bloom) |
+| 动画 | Framer Motion + framer-motion-3d |
 | 样式 | Tailwind CSS 4 |
 | 后端框架 | Hono |
 | 数据库 | better-sqlite3 |
 | 认证 | JWT |
 | 包管理 | pnpm |
-| 部署 | Docker + GitHub Actions |
+| 部署 | Docker + GitHub Actions (GitHub Pages)
+
+## V2 新特性
+
+- **全局 Toast**：替换所有 `alert()`，Framer Motion 动画，最多 3 条 FIFO
+- **终端覆盖层**：`Ctrl+K` 唤起，支持 `ls`/`cd level<N>`/`help`/`whoami`/`login`/`logout`/`progress`/`exit`
+- **答题粒子特效**：R3F 3D 粒子场，答对聚集 / 答错散开 / 跳过左移
+- **3D 关卡场景**：Level 2 时间线、Level 5 内核架构、Level 6 Ring 层级
+- **题目状态点阵**：底部圆点显示正确/错误/跳过/当前状态
+- **上一题 / 跳过按钮**：支持回溯和暂时跳过
+- **Bloom 后处理**：StarMap 星图发光效果
+- **NEXT 指示器**：星图当前可挑战关卡标注
+- **音频设置面板**：右下角浮动面板，BGM 切换/音量/音效控制
+- **CI/CD**：GitHub Actions 自动构建部署到 GitHub Pages |
 
 ## 安全设计
 
