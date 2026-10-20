@@ -30,14 +30,16 @@ function Node({
   onSelect: (id: number) => void
 }) {
   const meshRef = useRef<THREE.Mesh>(null)
+  const timeRef = useRef(0)
   const [hovered, setHovered] = useState(false)
   const unlocked = level.id === 1 || progress.includes(level.id - 1)
   const completed = progress.includes(level.id)
 
-  useFrame((state) => {
+  useFrame((_, delta) => {
+    timeRef.current += delta
     if (meshRef.current) {
       meshRef.current.rotation.y += 0.003
-      meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.5) * 0.1
+      meshRef.current.rotation.x = Math.sin(timeRef.current * 0.5) * 0.1
     }
   })
 

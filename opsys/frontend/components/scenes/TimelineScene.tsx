@@ -36,9 +36,11 @@ function TimelineLine() {
 
 function MilestoneNode({ milestone, index }: { milestone: typeof MILESTONES[0]; index: number }) {
   const meshRef = useRef<THREE.Mesh>(null)
-  useFrame((state) => {
+  const timeRef = useRef(0)
+  useFrame((_, delta) => {
+    timeRef.current += delta
     if (meshRef.current) {
-      meshRef.current.position.y = milestone.pos[1] + Math.sin(state.clock.elapsedTime * 1.5 + index) * 0.1
+      meshRef.current.position.y = milestone.pos[1] + Math.sin(timeRef.current * 1.5 + index) * 0.1
     }
   })
 

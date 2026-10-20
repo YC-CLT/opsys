@@ -49,10 +49,12 @@ function RingLayer({
 
 function TransitionArrow() {
   const arrowRef = useRef<THREE.Group>(null)
-  useFrame((state) => {
+  const timeRef = useRef(0)
+  useFrame((_, delta) => {
+    timeRef.current += delta
     if (arrowRef.current) {
-      arrowRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.3) * 0.05
-      arrowRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.1
+      arrowRef.current.rotation.z = Math.sin(timeRef.current * 0.3) * 0.05
+      arrowRef.current.position.y = Math.sin(timeRef.current * 0.5) * 0.1
     }
   })
 

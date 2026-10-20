@@ -16,13 +16,15 @@ const ARCHITECTURES = [
 function ArchNode({ arch, index }: { arch: typeof ARCHITECTURES[0]; index: number }) {
   const groupRef = useRef<THREE.Group>(null)
   const glowRef = useRef<THREE.Mesh>(null)
+  const timeRef = useRef(0)
 
-  useFrame((state) => {
+  useFrame((_, delta) => {
+    timeRef.current += delta
     if (groupRef.current) {
-      groupRef.current.position.y = arch.pos[1] + Math.sin(state.clock.elapsedTime * 0.8 + index) * 0.15
+      groupRef.current.position.y = arch.pos[1] + Math.sin(timeRef.current * 0.8 + index) * 0.15
     }
     if (glowRef.current) {
-      const s = 1 + Math.sin(state.clock.elapsedTime * 2 + index) * 0.1
+      const s = 1 + Math.sin(timeRef.current * 2 + index) * 0.1
       glowRef.current.scale.setScalar(s)
     }
   })
