@@ -14,6 +14,9 @@ import { useAudio } from '@/components/ui/AudioProvider'
 import { useToast } from '@/components/ui/Toast'
 import ParticleField from '@/components/effects/ParticleField'
 import type { ParticleMode } from '@/components/effects/ParticleField'
+import TimelineScene from '@/components/scenes/TimelineScene'
+import ArchitectureScene from '@/components/scenes/ArchitectureScene'
+import SyscallScene from '@/components/scenes/SyscallScene'
 
 function QuizPageContent() {
   const params = useParams()
@@ -179,6 +182,9 @@ function QuizPageContent() {
   return (
     <main className="min-h-screen flex flex-col items-center px-4 py-8 gap-6">
       <ParticleField mode={particleMode} />
+      {levelId === 2 && <TimelineScene />}
+      {levelId === 5 && <ArchitectureScene />}
+      {levelId === 6 && <SyscallScene />}
       <div className="w-full max-w-2xl flex items-center justify-between">
         <button
           onClick={() => router.push('/student/dashboard')}
