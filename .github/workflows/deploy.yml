@@ -45,6 +45,7 @@ jobs:
         working-directory: opsys
         env:
           NEXT_PUBLIC_MODE: static
+          BUILD_STATIC: '1'
         run: pnpm --filter frontend run build:static
 
       - name: Setup Pages

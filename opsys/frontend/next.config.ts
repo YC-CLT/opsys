@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const isStatic = process.env.NEXT_PUBLIC_MODE === "static";
+const isStatic = process.env.NEXT_PUBLIC_MODE === "static" || process.env.BUILD_STATIC === "1";
 
 const nextConfig: NextConfig = {
   output: isStatic ? "export" : "standalone",
@@ -8,8 +8,8 @@ const nextConfig: NextConfig = {
   experimental: {
     agentFeedback: true,
   },
-  cacheComponents: true,
-  partialPrefetching: true,
+  cacheComponents: !isStatic,
+  partialPrefetching: !isStatic,
   turbopack: {
     rules: {
       "*.css": {
