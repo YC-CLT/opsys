@@ -3,6 +3,7 @@
 import { useRef, useState, useMemo } from 'react'
 import { Canvas, useFrame, type ThreeEvent } from '@react-three/fiber'
 import { Text, Float } from '@react-three/drei'
+import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import * as THREE from 'three'
 
 const LEVELS = [
@@ -186,6 +187,7 @@ export default function StarMap({ progress, onSelectLevel }: StarMapProps) {
         <ambientLight intensity={0.4} />
         <pointLight position={[0, 5, 5]} intensity={1} color="#a78bfa" />
         <pointLight position={[0, -5, -5]} intensity={0.5} color="#6366f1" />
+        <pointLight position={[4, 0, 2]} intensity={0.3} color="#c084fc" />
 
         <StarField />
         <ConnectionLines progress={progress} />
@@ -193,6 +195,36 @@ export default function StarMap({ progress, onSelectLevel }: StarMapProps) {
         {LEVELS.map((level) => (
           <Node key={level.id} level={level} progress={progress} onSelect={onSelectLevel} />
         ))}
+
+        {/* Current unlocked level indicator */}
+        {(() => {
+          const nextLevel = LEVELS.find((l) => !progress.includes(l.id) && (l.id === 1 || progress.includes(l.id - 1)))
+          if (!nextLevel) return null
+          return (
+            <Float speed={1.5} rotationIntensity={0} floatIntensity={0.2}>
+              <Text
+                position={[nextLevel.pos[0], nextLevel.pos[1] - 1.1, nextLevel.pos[2]]}
+                fontSize={0.18}
+                color={nextLevel.color}
+                anchorX="center"
+                anchorY="middle"
+                fillOpacity={0.7}
+                font="/fonts/GeistMono-Regular.woff2"
+              >
+                {'> NEXT <'}
+              </Text>
+            </Float>
+          )
+        })()}
+
+        <EffectComposer multisampling={0}>
+          <Bloom
+            intensity={0.4}
+            luminanceThreshold={0.3}
+            luminanceSmoothing={0.6}
+            mipmapBlur
+          />
+        </EffectComposer>
       </Canvas>
     </div>
   )
