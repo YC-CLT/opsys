@@ -28,7 +28,7 @@ jobs:
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 10
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -41,12 +41,10 @@ jobs:
         working-directory: opsys
         run: pnpm install --frozen-lockfile
 
-      - name: Generate answer hashes
+      - name: Generate answer hashes & Build static
         working-directory: opsys
-        run: pnpm --filter frontend run hashgen
-
-      - name: Build static
-        working-directory: opsys
+        env:
+          NEXT_PUBLIC_MODE: static
         run: pnpm --filter frontend run build:static
 
       - name: Setup Pages
