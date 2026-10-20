@@ -4,8 +4,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '@/hooks/useAuth'
-import { useModeDetect } from '@/hooks/useModeDetect'
-import { apiFetch } from '@/lib/api'
+import { useQuizData } from '@/hooks/useQuizData'
 import ChoiceQuiz from '@/components/quiz/ChoiceQuiz'
 import JudgeQuiz from '@/components/quiz/JudgeQuiz'
 import MatchQuiz from '@/components/quiz/MatchQuiz'
@@ -13,41 +12,20 @@ import QuizResult from '@/components/quiz/QuizResult'
 import Terminal from '@/components/ui/Terminal'
 import { useAudio } from '@/components/ui/AudioProvider'
 
-interface QuestionData {
-  id: string
-  type: 'choice' | 'judge' | 'match'
-  difficulty: string
-  levelId: number
-  content: {
-    stem: string
-    options?: string[]
-    pairs?: { left: string; right: string }[]
-  }
-  explanation: string
-}
-
-interface AnswerResult {
-  correct: boolean
-  explanation: string
-}
-
 function QuizPageContent() {
   const params = useParams()
   const router = useRouter()
   const { student } = useAuth()
-  const { mode } = useModeDetect()
   const { playSFX, playBGM } = useAudio()
 
   const levelId = parseInt(params.id as string)
+  const { questions, loading, error, submitAnswer, mode } = useQuizData(levelId)
 
-  const [questions, setQuestions] = useState<QuestionData[]>([])
   const [currentIndex, setCurrentIndex] = useState(0)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
 
   const [selectedAnswer, setSelectedAnswer] = useState<string | boolean | Record<string, string> | undefined>()
   const [submittedAnswer, setSubmittedAnswer] = useState<string | boolean | Record<string, string> | undefined>()
-  const [result, setResult] = useState<AnswerResult | null>(null)
+  const [result, setResult] = useState<{ correct: boolean; explanation: string } | null>(null)
   const [showResult, setShowResult] = useState(false)
   const [submitting, setSubmitting] = useState(false)
 
@@ -59,7 +37,6 @@ function QuizPageContent() {
       router.replace('/student')
       return
     }
-    loadQuestions()
     playBGM('/audio/bg1.mp3', 0.3)
   }, [levelId, student])
 
@@ -69,43 +46,24 @@ function QuizPageContent() {
     }
   }, [finished, levelId, score.correct, score.total, router])
 
-  const loadQuestions = async () => {
-    try {
-      setLoading(true)
-      const data = await apiFetch<{ questions: QuestionData[] }>(`/api/quiz/${levelId}`)
-      setQuestions(data.questions)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '加载题库失败')
-    } finally {
-      setLoading(false)
-    }
-  }
-
   const currentQuestion = questions[currentIndex]
 
   const handleAnswer = useCallback(async (answer: string | boolean | Record<string, string>) => {
-    if (submitting) return
+    if (submitting || !currentQuestion) return
 
     setSelectedAnswer(answer)
     setSubmitting(true)
 
     try {
       const token = student?.token
-      let payload: { questionId: string; answer: unknown }
+      const res = await submitAnswer(currentQuestion.id, answer, token)
 
-      if (typeof answer === 'boolean') {
-        payload = { questionId: currentQuestion.id, answer }
-      } else if (typeof answer === 'object') {
-        payload = { questionId: currentQuestion.id, answer }
-      } else {
-        payload = { questionId: currentQuestion.id, answer }
+      if ('error' in res && res.error === 'already_answered') {
+        alert('该题已作答，即将跳转下一题')
+        setSubmitting(false)
+        handleNext()
+        return
       }
-
-      const res = await apiFetch<AnswerResult>('/api/quiz/submit', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body: JSON.stringify(payload),
-      })
 
       setResult(res)
       setSubmittedAnswer(answer)
@@ -127,7 +85,7 @@ function QuizPageContent() {
     } finally {
       setSubmitting(false)
     }
-  }, [currentQuestion, student, submitting])
+  }, [currentQuestion, student, submitting, submitAnswer, playSFX])
 
   const handleNext = () => {
     setSelectedAnswer(undefined)
@@ -141,8 +99,6 @@ function QuizPageContent() {
       setCurrentIndex((prev) => prev + 1)
     }
   }
-
-  const correctAnswer = currentQuestion ? (result?.correct !== undefined ? (result.correct ? selectedAnswer : undefined) : undefined) : undefined
 
   if (loading) {
     return (

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useModeDetect } from '@/hooks/useModeDetect'
 import { apiFetch } from '@/lib/api'
 import { getStoredQuestions, storeQuizQuestions, addStaticRecord, hasAnswered } from '@/lib/staticStore'
+import { checkAnswer, getStaticQuestions } from '@/lib/quiz-engine'
 import type { QuestionData } from '@/components/quiz/types'
 
 export function useQuizData(levelId: number) {
@@ -22,12 +23,13 @@ export function useQuizData(levelId: number) {
     try {
       if (mode === 'static') {
         let qs = getStoredQuestions()
-        if (!qs) {
-          const data = await apiFetch<{ questions: QuestionData[] }>(`/api/quiz/${levelId}`)
-          qs = data.questions
-          storeQuizQuestions(qs)
+        if (!qs || qs.length === 0) {
+          qs = await getStaticQuestions(levelId) as QuestionData[]
+          if (qs && qs.length > 0) {
+            storeQuizQuestions(qs)
+          }
         }
-        setQuestions(qs)
+        setQuestions(qs || [])
       } else {
         const data = await apiFetch<{ questions: QuestionData[] }>(`/api/quiz/${levelId}`)
         setQuestions(data.questions)
@@ -35,7 +37,7 @@ export function useQuizData(levelId: number) {
     } catch (err) {
       if (mode === 'static') {
         setQuestions([])
-        setError('静态模式下无可用的题库缓存，请先在有网络时加载一次')
+        setError('静态模式下无可用的题库缓存')
       } else {
         setError(err instanceof Error ? err.message : '加载题库失败')
       }
@@ -46,21 +48,20 @@ export function useQuizData(levelId: number) {
 
   const submitAnswer = async (questionId: string, answer: unknown, token?: string) => {
     if (mode === 'static') {
-      const q = questions.find((q) => q.id === questionId)
-      if (!q) throw new Error('题目不存在')
-
-      let isCorrect = false
-      if (q.type === 'match') {
-        const userMap = answer as Record<string, string>
-        const correctMap: Record<string, string> = {}
-        q.content.pairs?.forEach((p) => { correctMap[p.left] = p.right })
-        isCorrect = Object.keys(correctMap).every((k) => userMap[k] === correctMap[k])
-      } else {
-        isCorrect = true
+      if (hasAnswered(questionId)) {
+        return { error: 'already_answered', correct: false, explanation: '该题已作答' }
       }
 
-      addStaticRecord({ questionId, studentAnswer: answer, isCorrect, answeredAt: new Date().toISOString() })
-      return { correct: isCorrect, explanation: q.explanation }
+      const result = await checkAnswer(questionId, answer)
+      if (!result) throw new Error('题目不存在')
+
+      addStaticRecord({
+        questionId,
+        studentAnswer: answer,
+        isCorrect: result.correct,
+        answeredAt: new Date().toISOString(),
+      })
+      return result
     }
 
     return apiFetch<{ correct: boolean; explanation: string }>('/api/quiz/submit', {
@@ -70,5 +71,5 @@ export function useQuizData(levelId: number) {
     })
   }
 
-  return { questions, loading, error, submitAnswer, reload: load }
+  return { questions, loading, error, submitAnswer, reload: load, mode }
 }
