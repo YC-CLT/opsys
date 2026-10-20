@@ -42,6 +42,7 @@ function QuizPageContent() {
   const [score, setScore] = useState({ correct: 0, total: 0 })
   const prevCorrectRef = useRef(0)
   const [finished, setFinished] = useState(false)
+  const [bgOnly, setBgOnly] = useState(false)
   const [particleMode, setParticleMode] = useState<ParticleMode>('idle')
 
   useEffect(() => {
@@ -203,20 +204,35 @@ function QuizPageContent() {
         >
           ← 返回星图
         </button>
-        <div className="flex items-center gap-3 text-sm">
-          <span className="text-zinc-500">Lv.{levelId}</span>
-          <div className="w-32 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-            <motion.div
-              className="h-full bg-accent rounded-full"
-              initial={{ width: `${((currentIndex) / questions.length) * 100}%` }}
-              animate={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
-              transition={{ duration: 0.3 }}
-            />
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => setBgOnly((v) => !v)}
+            className={`text-xs px-3 py-1 rounded-full border transition-colors ${
+              bgOnly
+                ? 'bg-accent/20 border-accent/40 text-accent'
+                : 'border-zinc-700/50 text-zinc-500 hover:text-zinc-300'
+            }`}
+            title={bgOnly ? '显示题目' : '隐藏题目 · 欣赏场景'}
+          >
+            {bgOnly ? '👁 显示题目' : '👁‍🗨 沉浸'}
+          </button>
+          <div className="flex items-center gap-3 text-sm">
+            <span className="text-zinc-500">Lv.{levelId}</span>
+            <div className="w-32 h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+              <motion.div
+                className="h-full bg-accent rounded-full"
+                initial={{ width: `${((currentIndex) / questions.length) * 100}%` }}
+                animate={{ width: `${((currentIndex + 1) / questions.length) * 100}%` }}
+                transition={{ duration: 0.3 }}
+              />
+            </div>
+            <span className="text-zinc-400 font-mono">{currentIndex + 1}/{questions.length}</span>
           </div>
-          <span className="text-zinc-400 font-mono">{currentIndex + 1}/{questions.length}</span>
         </div>
       </div>
 
+      {!bgOnly && (
+      <>
       {/* Question navigator dots */}
       <div className="w-full max-w-2xl flex items-center justify-center gap-1.5 flex-wrap">
         {questions.map((q, idx) => {
@@ -331,6 +347,8 @@ function QuizPageContent() {
 
       {submitting && (
         <div className="text-sm text-zinc-500 animate-pulse">正在提交...</div>
+      )}
+      </>
       )}
     </main>
   )
