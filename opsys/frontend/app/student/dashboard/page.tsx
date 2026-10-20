@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { useAuth } from '@/hooks/useAuth'
-import { useAudio } from '@/components/ui/AudioProvider'
 import AudioSettings from '@/components/ui/AudioSettings'
 
 const StarMap = dynamic(() => import('@/components/ui/StarMap'), { ssr: false })
@@ -14,7 +13,6 @@ const LEVEL_NAMES = ['', '第一章·引论', '发展历程', '基本特性', '�
 
 export default function StudentDashboard() {
   const { student, logout, loading: authLoading } = useAuth()
-  const { playBGM } = useAudio()
   const router = useRouter()
 
   useEffect(() => {
@@ -22,10 +20,6 @@ export default function StudentDashboard() {
       router.replace('/student')
     }
   }, [student, router, authLoading])
-
-  useEffect(() => {
-    playBGM('/audio/bg1.mp3', 1)
-  }, [])
 
   if (authLoading || !student) return null
 

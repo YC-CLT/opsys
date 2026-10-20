@@ -53,6 +53,7 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   const sfxPool = useRef<Set<HTMLAudioElement>>(new Set())
   const bgmVolumeRef = useRef<number>(1)
   const currentSrcRef = useRef<string | null>(null)
+  const bgmEnabledRef = useRef(true)
   const [bgmEnabled, setBgmEnabledState] = useState(true)
   const [sfxEnabled, setSfxEnabledState] = useState(true)
   const [volume, setVolumeState] = useState(0.3)
@@ -62,10 +63,12 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     const savedBgm = localStorage.getItem(STORAGE_KEYS.bgm)
     const savedSfx = localStorage.getItem(STORAGE_KEYS.sfx)
     const savedVol = localStorage.getItem(STORAGE_KEYS.volume)
-    if (savedBgm !== null) setBgmEnabledState(savedBgm === 'true')
+    if (savedBgm !== null) { setBgmEnabledState(savedBgm === 'true'); bgmEnabledRef.current = savedBgm === 'true' }
     if (savedSfx !== null) setSfxEnabledState(savedSfx === 'true')
     if (savedVol !== null) setVolumeState(parseFloat(savedVol))
   }, [])
+
+  useEffect(() => { bgmEnabledRef.current = bgmEnabled }, [bgmEnabled])
 
   const toggleBGM = useCallback(() => {
     setBgmEnabledState((prev) => {
@@ -98,9 +101,13 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const playBGM = useCallback((src: string, bgmVolume?: number) => {
-    currentSrcRef.current = src
     bgmVolumeRef.current = bgmVolume ?? 1
-    if (!bgmEnabled) return
+    if (!bgmEnabledRef.current) return
+    if (bgmRef.current && currentSrcRef.current === src && !bgmRef.current.paused) {
+      bgmRef.current.volume = volume * bgmVolumeRef.current
+      return
+    }
+    currentSrcRef.current = src
     if (bgmRef.current) {
       bgmRef.current.pause()
       bgmRef.current = null
@@ -110,7 +117,15 @@ export function AudioProvider({ children }: { children: React.ReactNode }) {
     audio.volume = volume * bgmVolumeRef.current
     audio.play().catch(() => {})
     bgmRef.current = audio
-  }, [bgmEnabled, volume])
+  }, [volume])
+
+  // Global auto-start BGM when enabled
+  useEffect(() => {
+    if (!bgmEnabled) return
+    if (!bgmRef.current) {
+      playBGM(BGM_TRACKS[0], 1)
+    }
+  }, [bgmEnabled, playBGM])
 
   const stopBGM = useCallback(() => {
     if (bgmRef.current) {

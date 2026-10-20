@@ -21,7 +21,7 @@ function QuizPageContent() {
   const params = useParams()
   const router = useRouter()
   const { student, loading: authLoading } = useAuth()
-  const { playSFX, playBGM } = useAudio()
+  const { playSFX } = useAudio()
   const { toast } = useToast()
 
   const levelId = parseInt(params.id as string)
@@ -46,9 +46,6 @@ function QuizPageContent() {
     if (!authLoading && !student) {
       router.replace('/student')
       return
-    }
-    if (student) {
-      playBGM('/audio/bg1.mp3', 0.3)
     }
   }, [levelId, student, authLoading])
 
