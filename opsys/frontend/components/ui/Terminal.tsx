@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useAudio } from '@/components/ui/AudioProvider'
 import { useRouter } from 'next/navigation'
 import { executeCommand, type CommandContext } from '@/lib/terminal-commands'
@@ -48,13 +48,11 @@ export default function Terminal({ onEnterLevel, userName, studentId }: Terminal
   const [input, setInput] = useState('')
   const [history, setHistory] = useState<string[]>([])
   const [historyIdx, setHistoryIdx] = useState(-1)
-  const [lineCounter, setLineCounter] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
   const hasPlayedAudio = useRef(false)
 
   const addLine = useCallback((type: LogLine['type'], text: string, isCommand?: boolean) => {
-    setLineCounter((prev) => prev + 1)
     setLines((prev) => [...prev, { id: Date.now() + Math.random(), type, text, isCommand }])
   }, [])
 

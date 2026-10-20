@@ -1,12 +1,5 @@
-import { createHash } from 'node:crypto'
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
-import { join, dirname } from 'node:path'
-
-const SALT = 'os-challenge-static-2026'
-
-function sha256(text: string): string {
-  return createHash('sha256').update(text + SALT).digest('hex')
-}
+import { join } from 'node:path'
 
 interface Question {
   id: string

@@ -9,7 +9,7 @@ RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
 FROM deps AS build
 COPY . .
-RUN corepack enable pnpm && pnpm --filter backend build
+RUN corepack enable pnpm && pnpm --filter backend build && pnpm --filter frontend build
 
 FROM base AS runner
 COPY --from=build /app/backend/dist /app/dist

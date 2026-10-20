@@ -52,5 +52,6 @@ export async function checkAnswer(
 export async function getStaticQuestions(levelId: number) {
   const map = await loadQuestions()
   const all = Array.from(map.values()).filter((q: Question) => q.levelId === levelId)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return all.map(({ answerHash, ...rest }) => rest)
 }

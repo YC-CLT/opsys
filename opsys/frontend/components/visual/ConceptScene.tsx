@@ -34,6 +34,7 @@ function OSEvolution() {
       objs.push(new THREE.Line(geo, mat))
     }
     return objs
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (
