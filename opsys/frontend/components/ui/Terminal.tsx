@@ -4,6 +4,9 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAudio } from '@/components/ui/AudioProvider'
 import { useRouter } from 'next/navigation'
+import { executeCommand, type CommandContext } from '@/lib/terminal-commands'
+import { useAuth } from '@/hooks/useAuth'
+import { useModeDetect } from '@/hooks/useModeDetect'
 
 interface LogLine {
   id: number
@@ -25,17 +28,6 @@ const BOOT_SEQUENCE = [
   { type: 'dim' as const, text: '  ————————————' },
 ]
 
-const HELP_TEXT = [
-  'Available commands:',
-  '  ls           — list available levels',
-  '  cd level<N>  — enter a level (1-6)',
-  '  clear        — clear terminal screen',
-  '  whoami       — show current user info',
-  '  help         — show this help',
-]
-
-const LEVEL_NAMES = ['', '第一章·引论', '发展历程', '基本特性', '运行环境', '体系结构', '系统调用']
-
 interface TerminalProps {
   /** Called when user enters a valid cd level<N> command */
   onEnterLevel?: (level: number) => void
@@ -48,6 +40,8 @@ interface TerminalProps {
 export default function Terminal({ onEnterLevel, userName, studentId }: TerminalProps) {
   const router = useRouter()
   const { playSFX } = useAudio()
+  const { student } = useAuth()
+  const { mode } = useModeDetect()
   const [bootPhase, setBootPhase] = useState<'booting' | 'ready'>('booting')
   const [bootIndex, setBootIndex] = useState(0)
   const [lines, setLines] = useState<LogLine[]>([])
@@ -91,7 +85,7 @@ export default function Terminal({ onEnterLevel, userName, studentId }: Terminal
     }
   }, [lines])
 
-  const executeCommand = useCallback((cmd: string) => {
+  const handleCommand = useCallback((cmd: string) => {
     const trimmed = cmd.trim()
     if (!trimmed) {
       addLine('input', '$ ')
@@ -102,43 +96,43 @@ export default function Terminal({ onEnterLevel, userName, studentId }: Terminal
     setHistory((prev) => [...prev, trimmed])
     setHistoryIdx(-1)
 
-    const lower = trimmed.toLowerCase()
+    const context: CommandContext = {
+      mode,
+      isLoggedIn: !!student,
+      userName: userName || student?.name,
+      studentId: studentId || student?.studentId,
+    }
+    const result = executeCommand(trimmed, context)
 
-    if (lower === 'help') {
-      HELP_TEXT.forEach((h) => addLine('output', h))
-    } else if (lower === 'ls') {
-      addLine('output', 'Available levels:')
-      for (let i = 1; i <= 6; i++) {
-        addLine('output', `  level${i}  —  ${LEVEL_NAMES[i]}`)
-      }
-    } else if (lower === 'clear') {
+    if (result.action === 'clear') {
       setLines([])
       addLine('output', 'os-challenge@kernel:~$ ')
       return
-    } else if (lower === 'whoami') {
-      if (userName && studentId) {
-        addLine('output', `uid=${studentId} name=${userName}`)
-      } else {
-        addLine('output', 'os-challenge@kernel (not logged in)')
-      }
-    } else if (/^cd level[1-6]$/.test(lower)) {
-      const level = parseInt(lower.replace('cd level', ''))
-      addLine('output', `Entering ${LEVEL_NAMES[level]}...`)
+    }
+
+    result.outputLines.forEach((line) => addLine('output', line))
+
+    if (result.action === 'navigate' && result.actionPayload) {
       if (onEnterLevel) {
-        onEnterLevel(level)
+        const levelMatch = result.actionPayload.match(/\/level\/(\d+)/)
+        if (levelMatch) onEnterLevel(parseInt(levelMatch[1]))
       } else {
-        router.push(`/student/level/${level}`)
+        router.push(result.actionPayload)
       }
-    } else {
-      addLine('error', `bash: ${trimmed.split(' ')[0]}: command not found`)
+      return
+    }
+
+    if (result.action === 'close') {
+      addLine('output', 'os-challenge@kernel:~$ ')
+      return
     }
 
     addLine('output', 'os-challenge@kernel:~$ ')
-  }, [addLine, onEnterLevel, router, userName, studentId])
+  }, [addLine, mode, student, userName, studentId, onEnterLevel, router])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      executeCommand(input)
+      handleCommand(input)
       setInput('')
     } else if (e.key === 'ArrowUp') {
       e.preventDefault()
