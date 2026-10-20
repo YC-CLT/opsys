@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 const isStatic = process.env.NEXT_PUBLIC_MODE === "static" || process.env.BUILD_STATIC === "1";
 
 const nextConfig: NextConfig = {
+  basePath: isStatic ? "/opsys" : undefined,
   output: isStatic ? "export" : "standalone",
   images: isStatic ? { unoptimized: true } : undefined,
   experimental: {

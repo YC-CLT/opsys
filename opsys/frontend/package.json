@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "build": "next build",
-    "build:static": "pnpm tsx scripts/generate-hashes.ts && set NEXT_PUBLIC_MODE=static && set BUILD_STATIC=1 && next build",
+    "build:static": "pnpm tsx scripts/generate-hashes.ts && tsx scripts/build-static.ts",
     "start": "next start",
     "lint": "eslint",
     "hash": "tsx scripts/generate-hashes.ts"
