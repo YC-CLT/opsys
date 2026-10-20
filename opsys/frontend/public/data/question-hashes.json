@@ -1,0 +1,173 @@
+{
+  "version": "1.0",
+  "entries": [
+    {
+      "id": "Q1",
+      "hash": "9260002e2842b69916a5b69d85414f5e347cba536c30f41dfafb20b7d53a9861",
+      "type": "choice",
+      "levelId": 1
+    },
+    {
+      "id": "Q2",
+      "hash": "9260002e2842b69916a5b69d85414f5e347cba536c30f41dfafb20b7d53a9861",
+      "type": "choice",
+      "levelId": 1
+    },
+    {
+      "id": "Q3",
+      "hash": "9260002e2842b69916a5b69d85414f5e347cba536c30f41dfafb20b7d53a9861",
+      "type": "choice",
+      "levelId": 1
+    },
+    {
+      "id": "Q4",
+      "hash": "a8adc622b22700e2c272f13ed5861c3370d19f51e3c82f1dcef0c935013f1aa2",
+      "type": "choice",
+      "levelId": 1
+    },
+    {
+      "id": "Q5",
+      "hash": "a8ab447283266c005d4518f580c38464846299f84e7fd17b9b1431f61ddcb89e",
+      "type": "choice",
+      "levelId": 6
+    },
+    {
+      "id": "Q6",
+      "hash": "9260002e2842b69916a5b69d85414f5e347cba536c30f41dfafb20b7d53a9861",
+      "type": "choice",
+      "levelId": 3
+    },
+    {
+      "id": "Q7",
+      "hash": "9260002e2842b69916a5b69d85414f5e347cba536c30f41dfafb20b7d53a9861",
+      "type": "choice",
+      "levelId": 3
+    },
+    {
+      "id": "Q8",
+      "hash": "a8adc622b22700e2c272f13ed5861c3370d19f51e3c82f1dcef0c935013f1aa2",
+      "type": "choice",
+      "levelId": 3
+    },
+    {
+      "id": "Q9",
+      "hash": "6bd39be94efc07e58328d759cb8a8199c28f3407f3110be122679542f395889e",
+      "type": "choice",
+      "levelId": 4
+    },
+    {
+      "id": "Q10",
+      "hash": "9260002e2842b69916a5b69d85414f5e347cba536c30f41dfafb20b7d53a9861",
+      "type": "choice",
+      "levelId": 4
+    },
+    {
+      "id": "Q11",
+      "hash": "9260002e2842b69916a5b69d85414f5e347cba536c30f41dfafb20b7d53a9861",
+      "type": "choice",
+      "levelId": 6
+    },
+    {
+      "id": "Q12",
+      "hash": "a8adc622b22700e2c272f13ed5861c3370d19f51e3c82f1dcef0c935013f1aa2",
+      "type": "choice",
+      "levelId": 5
+    },
+    {
+      "id": "Q13",
+      "hash": "9260002e2842b69916a5b69d85414f5e347cba536c30f41dfafb20b7d53a9861",
+      "type": "choice",
+      "levelId": 5
+    },
+    {
+      "id": "Q14",
+      "hash": "9260002e2842b69916a5b69d85414f5e347cba536c30f41dfafb20b7d53a9861",
+      "type": "choice",
+      "levelId": 6
+    },
+    {
+      "id": "Q15",
+      "hash": "a8adc622b22700e2c272f13ed5861c3370d19f51e3c82f1dcef0c935013f1aa2",
+      "type": "choice",
+      "levelId": 6
+    },
+    {
+      "id": "Q16",
+      "hash": "6a8fa79cfbf8948846702a4843799b151fc697646b1d549ca7e9ff8f004f2e7b",
+      "type": "judge",
+      "levelId": 1
+    },
+    {
+      "id": "Q17",
+      "hash": "6a8fa79cfbf8948846702a4843799b151fc697646b1d549ca7e9ff8f004f2e7b",
+      "type": "judge",
+      "levelId": 2
+    },
+    {
+      "id": "Q18",
+      "hash": "e04d5ca620ceec44068f5a6a6e221a34040d18c0cc32d9c0dc1e5f158afdd6cc",
+      "type": "judge",
+      "levelId": 2
+    },
+    {
+      "id": "Q19",
+      "hash": "e04d5ca620ceec44068f5a6a6e221a34040d18c0cc32d9c0dc1e5f158afdd6cc",
+      "type": "judge",
+      "levelId": 3
+    },
+    {
+      "id": "Q20",
+      "hash": "6a8fa79cfbf8948846702a4843799b151fc697646b1d549ca7e9ff8f004f2e7b",
+      "type": "judge",
+      "levelId": 4
+    },
+    {
+      "id": "Q21",
+      "hash": "e04d5ca620ceec44068f5a6a6e221a34040d18c0cc32d9c0dc1e5f158afdd6cc",
+      "type": "judge",
+      "levelId": 4
+    },
+    {
+      "id": "Q22",
+      "hash": "e04d5ca620ceec44068f5a6a6e221a34040d18c0cc32d9c0dc1e5f158afdd6cc",
+      "type": "judge",
+      "levelId": 5
+    },
+    {
+      "id": "Q23",
+      "hash": "6a8fa79cfbf8948846702a4843799b151fc697646b1d549ca7e9ff8f004f2e7b",
+      "type": "judge",
+      "levelId": 5
+    },
+    {
+      "id": "Q24",
+      "hash": "03d5b6e7b5dbd9027075a95b1a518325e86341f342c56fb91c19a7b767905192",
+      "type": "match",
+      "levelId": 2
+    },
+    {
+      "id": "Q25",
+      "hash": "9789fa8d15ea6512dc316d1b19b26b6136590c2adcb16c0eab0feda0d8a14a0d",
+      "type": "match",
+      "levelId": 3
+    },
+    {
+      "id": "Q26",
+      "hash": "61cc12fae457a8a63382b934d0c36860b5191053d87f6531ec67c3d639d2ecd8",
+      "type": "match",
+      "levelId": 6
+    },
+    {
+      "id": "Q27",
+      "hash": "be0cd99baf1c6fffcd3dd8e29e3c073690404e1ccc3e10b3bee52668eafe48f2",
+      "type": "match",
+      "levelId": 5
+    },
+    {
+      "id": "Q28",
+      "hash": "ebbfe66c2a58de0188f110cbcce1fcc1ec5c987075bb5d7a7d72fc9c52df15a5",
+      "type": "match",
+      "levelId": 6
+    }
+  ]
+}

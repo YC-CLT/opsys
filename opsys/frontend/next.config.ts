@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  env: {
+    NEXT_PUBLIC_MODE: process.env.NEXT_PUBLIC_MODE || 'live',
+    NEXT_PUBLIC_HASH_FILE: '/data/question-hashes.json',
+  },
 };
 
 export default nextConfig;
