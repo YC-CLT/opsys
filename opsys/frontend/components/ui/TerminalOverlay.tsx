@@ -137,6 +137,7 @@ function TerminalOverlay() {
         addOutput(`Login successful! Welcome, ${payload.name}.`)
         addOutput('Redirecting to dashboard...')
         addOutput('os-challenge@kernel:~$ ')
+        router.push('/student/dashboard')
         return
       } catch {
         addOutput('login: failed to parse credentials')

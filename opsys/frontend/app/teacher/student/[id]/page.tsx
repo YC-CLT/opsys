@@ -23,23 +23,24 @@ interface StudentDetail {
 }
 
 function DetailContent() {
-  const params = useParams()
+  const { teacher, loading: authLoading } = useAuth()
   const router = useRouter()
-  const { teacher } = useAuth()
-  const studentId = params.id as string
-
+  const { id } = useParams<{ id: string }>()
+  const studentId = id || ''
   const [data, setData] = useState<StudentDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [filter, setFilter] = useState<'all' | 'correct' | 'wrong'>('all')
 
   useEffect(() => {
-    if (!teacher) {
+    if (!authLoading && !teacher) {
       router.replace('/teacher/login')
       return
     }
-    loadStudent()
-  }, [teacher, studentId])
+    if (teacher) {
+      loadStudent()
+    }
+  }, [teacher, studentId, authLoading])
 
   const loadStudent = async () => {
     try {
@@ -52,6 +53,14 @@ function DetailContent() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (authLoading || !teacher) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <p className="text-zinc-400 animate-pulse">加载学生答题记录...</p>
+      </main>
+    )
   }
 
   if (loading) {

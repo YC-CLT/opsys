@@ -20,7 +20,7 @@ import SyscallScene from '@/components/scenes/SyscallScene'
 function QuizPageContent() {
   const params = useParams()
   const router = useRouter()
-  const { student } = useAuth()
+  const { student, loading: authLoading } = useAuth()
   const { playSFX, playBGM } = useAudio()
   const { toast } = useToast()
 
@@ -43,12 +43,14 @@ function QuizPageContent() {
   const [particleMode, setParticleMode] = useState<ParticleMode>('idle')
 
   useEffect(() => {
-    if (!student) {
+    if (!authLoading && !student) {
       router.replace('/student')
       return
     }
-    playBGM('/audio/bg1.mp3', 0.3)
-  }, [levelId, student])
+    if (student) {
+      playBGM('/audio/bg1.mp3', 0.3)
+    }
+  }, [levelId, student, authLoading])
 
   useEffect(() => {
     if (finished) {

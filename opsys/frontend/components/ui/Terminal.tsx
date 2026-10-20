@@ -134,6 +134,7 @@ export default function Terminal({ onEnterLevel, userName, studentId }: Terminal
         addLine('output', `Login successful! Welcome, ${payload.name}.`)
         addLine('output', 'Redirecting to dashboard...')
         addLine('output', 'os-challenge@kernel:~$ ')
+        router.push('/student/dashboard')
         return
       } catch {
         addLine('error', 'login: failed to parse credentials')

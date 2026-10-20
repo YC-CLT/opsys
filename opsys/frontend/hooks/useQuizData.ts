@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useModeDetect } from '@/hooks/useModeDetect'
 import { apiFetch } from '@/lib/api'
 import { getStoredQuestions, storeQuizQuestions, addStaticRecord, addSkipRecord, hasAnswered } from '@/lib/staticStore'
@@ -13,16 +13,15 @@ export function useQuizData(levelId: number) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
-  useEffect(() => {
+  const load = useCallback(async () => {
     if (!mode) return
-    load()
-  }, [levelId, mode])
-
-  const load = async () => {
     setLoading(true)
     try {
       if (mode === 'static') {
         let qs = getStoredQuestions()
+        if (qs && qs.length > 0) {
+          qs = qs.filter((q: QuestionData) => q.levelId === levelId)
+        }
         if (!qs || qs.length === 0) {
           qs = await getStaticQuestions(levelId) as QuestionData[]
           if (qs && qs.length > 0) {
@@ -32,7 +31,7 @@ export function useQuizData(levelId: number) {
         setQuestions(qs || [])
       } else {
         const data = await apiFetch<{ questions: QuestionData[] }>(`/api/quiz/${levelId}`)
-        setQuestions(data.questions)
+        setQuestions(data.questions || [])
       }
     } catch (err) {
       if (mode === 'static') {
@@ -44,7 +43,11 @@ export function useQuizData(levelId: number) {
     } finally {
       setLoading(false)
     }
-  }
+  }, [mode, levelId])
+
+  useEffect(() => {
+    load()
+  }, [load])
 
   const submitAnswer = async (questionId: string, answer: unknown, token?: string) => {
     if (mode === 'static') {

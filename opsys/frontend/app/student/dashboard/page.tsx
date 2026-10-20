@@ -13,21 +13,21 @@ const StarMap = dynamic(() => import('@/components/ui/StarMap'), { ssr: false })
 const LEVEL_NAMES = ['', '第一章·引论', '发展历程', '基本特性', '运行环境', '体系结构', '系统调用']
 
 export default function StudentDashboard() {
-  const { student, logout } = useAuth()
+  const { student, logout, loading: authLoading } = useAuth()
   const { playBGM } = useAudio()
   const router = useRouter()
 
   useEffect(() => {
-    if (!student) {
+    if (!authLoading && !student) {
       router.replace('/student')
     }
-  }, [student, router])
+  }, [student, router, authLoading])
 
   useEffect(() => {
     playBGM('/audio/bg1.mp3', 1)
   }, [])
 
-  if (!student) return null
+  if (authLoading || !student) return null
 
   const progress = student.progress || []
 

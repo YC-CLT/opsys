@@ -44,7 +44,7 @@ interface Overview {
 }
 
 export default function TeacherDashboard() {
-  const { teacher, logout } = useAuth()
+  const { teacher, logout, loading: authLoading } = useAuth()
   const router = useRouter()
   const [data, setData] = useState<Overview | null>(null)
   const [loading, setLoading] = useState(true)
@@ -52,12 +52,14 @@ export default function TeacherDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'students' | 'questions'>('overview')
 
   useEffect(() => {
-    if (!teacher) {
+    if (!authLoading && !teacher) {
       router.replace('/teacher/login')
       return
     }
-    loadData()
-  }, [teacher])
+    if (teacher) {
+      loadData()
+    }
+  }, [teacher, authLoading])
 
   const loadData = async () => {
     try {
@@ -70,6 +72,14 @@ export default function TeacherDashboard() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (authLoading || !teacher) {
+    return (
+      <main className="min-h-screen flex items-center justify-center">
+        <p className="text-zinc-400 animate-pulse">加载仪表盘数据...</p>
+      </main>
+    )
   }
 
   if (loading) {
