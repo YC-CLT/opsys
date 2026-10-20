@@ -59,6 +59,7 @@ export default function TeacherDashboard() {
     if (teacher) {
       loadData()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teacher, authLoading])
 
   const loadData = async () => {

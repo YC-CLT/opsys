@@ -3,7 +3,7 @@ WORKDIR /app
 
 FROM base AS deps
 COPY pnpm-lock.yaml pnpm-workspace.yaml package.json ./
-COPY opsys/frontend/package.json ./opsys/frontend/
+COPY frontend/package.json ./frontend/
 RUN corepack enable pnpm && pnpm install --frozen-lockfile
 
 FROM deps AS build
@@ -13,13 +13,13 @@ COPY . .
 RUN corepack enable pnpm && pnpm --filter frontend build
 
 FROM base AS runner
-COPY --from=build /app/opsys/frontend/.next/standalone /app
-COPY --from=build /app/opsys/frontend/.next/static /app/opsys/frontend/.next/static
-COPY --from=build /app/opsys/frontend/public /app/opsys/frontend/public
+COPY --from=build /app/frontend/.next/standalone /app
+COPY --from=build /app/frontend/.next/static /app/frontend/.next/static
+COPY --from=build /app/frontend/public /app/frontend/public
 
 EXPOSE 3000
 ENV NODE_ENV=production
 ENV PORT=3000
 ENV NEXT_TELEMETRY_DISABLED=1
 
-CMD ["node", "opsys/frontend/server.js"]
+CMD ["node", "frontend/server.js"]

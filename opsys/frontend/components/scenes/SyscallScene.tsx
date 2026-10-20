@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { Text, Float, Ring } from '@react-three/drei'
+import { Text, Float } from '@react-three/drei'
 import * as THREE from 'three'
 
 function RingLayer({

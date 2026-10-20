@@ -72,15 +72,17 @@ export default function MatchQuiz({ stem, pairs, answer, onAnswer, disabled, sub
       if (!le || !re) continue
       const lr = le.getBoundingClientRect()
       const rr = re.getBoundingClientRect()
+      const ci = leftItems.indexOf(left) % COLORS.length
       newLines.push({
         x1: lr.right - cr.left,
         y1: lr.top + lr.height / 2 - cr.top,
         x2: rr.left - cr.left,
         y2: rr.top + rr.height / 2 - cr.top,
-        color: COLORS[colorIdx(left)].stroke,
+        color: COLORS[ci].stroke,
       })
     }
     setLines(newLines)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [leftItems, selections])
 
   useEffect(() => {

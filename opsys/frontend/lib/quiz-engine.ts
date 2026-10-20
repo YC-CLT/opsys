@@ -5,15 +5,20 @@ interface Question {
   type: string
   answerHash: string
   explanation: string
+  levelId: number
+}
+
+interface QuestionsData {
+  questions: Question[]
 }
 
 let questionMap: Map<string, Question> | null = null
 
 async function loadQuestions(): Promise<Map<string, Question>> {
   if (questionMap) return questionMap
-  const data = await import('../data/questions.json')
+  const data = (await import('../data/questions.json')) as { default: QuestionsData }
   questionMap = new Map()
-  for (const q of (data as any).questions) {
+  for (const q of data.default.questions) {
     questionMap.set(q.id, q)
   }
   return questionMap
@@ -46,6 +51,6 @@ export async function checkAnswer(
 
 export async function getStaticQuestions(levelId: number) {
   const map = await loadQuestions()
-  const all = Array.from(map.values()).filter((q: any) => q.levelId === levelId)
+  const all = Array.from(map.values()).filter((q: Question) => q.levelId === levelId)
   return all.map(({ answerHash, ...rest }) => rest)
 }

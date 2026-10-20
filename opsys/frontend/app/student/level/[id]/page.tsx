@@ -26,7 +26,7 @@ function QuizPageContent() {
   const { toast } = useToast()
 
   const levelId = parseInt(params.id as string)
-  const { questions, loading, error, submitAnswer, skipQuestion, mode } = useQuizData(levelId)
+  const { questions, loading, error, submitAnswer, skipQuestion } = useQuizData(levelId)
 
   const [currentIndex, setCurrentIndex] = useState(0)
 
@@ -50,6 +50,7 @@ function QuizPageContent() {
       router.replace('/student')
       return
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [levelId, student, authLoading])
 
   useEffect(() => {
@@ -111,6 +112,7 @@ function QuizPageContent() {
     } finally {
       setSubmitting(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentQuestion, student, submitting, submitAnswer, playSFX])
 
   const handleNext = () => {

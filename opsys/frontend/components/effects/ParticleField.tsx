@@ -76,9 +76,6 @@ function Particles({ mode = 'idle' }: { mode: ParticleMode }) {
       if (Math.abs(p.position[0]) > 7) p.velocity[0] *= -1
       if (Math.abs(p.position[1]) > 4) p.velocity[1] *= -1
 
-      const t = gatherTimer.current
-      const s = scatterTimer.current
-
       switch (modeRef.current) {
         case 'gather':
           p.position[0] += (0 - p.position[0]) * 0.02

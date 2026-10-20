@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useRef } from 'react'
+import { useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Text, Float, Line } from '@react-three/drei'
 import * as THREE from 'three'
@@ -18,11 +18,6 @@ const TIMELINE_POINTS = MILESTONES.map((m) =>
 )
 
 function TimelineLine() {
-  const geo = useMemo(() => {
-    const g = new THREE.BufferGeometry()
-    g.setFromPoints(TIMELINE_POINTS)
-    return g
-  }, [])
   return (
     <Line
       points={TIMELINE_POINTS}

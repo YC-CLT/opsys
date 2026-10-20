@@ -40,6 +40,7 @@ function DetailContent() {
     if (teacher) {
       loadStudent()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [teacher, studentId, authLoading])
 
   const loadStudent = async () => {
