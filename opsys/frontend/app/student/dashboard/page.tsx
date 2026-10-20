@@ -6,7 +6,6 @@ import { motion } from 'framer-motion'
 import dynamic from 'next/dynamic'
 import { useAuth } from '@/hooks/useAuth'
 import { useAudio } from '@/components/ui/AudioProvider'
-import Terminal from '@/components/ui/Terminal'
 import AudioSettings from '@/components/ui/AudioSettings'
 
 const StarMap = dynamic(() => import('@/components/ui/StarMap'), { ssr: false })
@@ -112,16 +111,6 @@ export default function StudentDashboard() {
             </button>
           )
         })}
-      </motion.div>
-
-      {/* Terminal */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-        className="w-full max-w-4xl"
-      >
-        <Terminal userName={student.name} studentId={student.studentId} />
       </motion.div>
 
       <AudioSettings />

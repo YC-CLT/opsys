@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState, useEffect, useCallback } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '@/hooks/useAuth'
@@ -73,6 +73,22 @@ function TerminalOverlay() {
   const [input, setInput] = useState('')
   const [history, setHistory] = useState<string[]>([])
   const [historyIdx, setHistoryIdx] = useState(-1)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const scrollRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        inputRef.current?.focus()
+      }, 50)
+    }
+  }, [isOpen])
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
+    }
+  }, [lines])
 
   const addOutput = useCallback((text: string) => {
     setLines((prev) => [...prev, text])
@@ -176,6 +192,7 @@ function TerminalOverlay() {
               </div>
 
               <div
+                ref={scrollRef}
                 className="p-3 space-y-0.5 h-[40vh] md:h-[50vh] overflow-y-auto"
                 onClick={(e) => e.stopPropagation()}
               >
@@ -197,11 +214,11 @@ function TerminalOverlay() {
                 <div className="flex items-center">
                   <span className="text-green-400">os-challenge@kernel:~$ </span>
                   <input
+                    ref={inputRef}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     className="flex-1 bg-transparent border-none outline-none text-cyan-300 caret-green-400 font-mono text-xs"
-                    autoFocus
                     spellCheck={false}
                     autoComplete="off"
                   />

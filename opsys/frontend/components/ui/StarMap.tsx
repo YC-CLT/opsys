@@ -178,7 +178,7 @@ interface StarMapProps {
 
 export default function StarMap({ progress, onSelectLevel }: StarMapProps) {
   return (
-    <div className="w-full h-[420px] md:h-[520px] cursor-grab active:cursor-grabbing">
+    <div className="w-full h-[480px] md:h-[600px] cursor-grab active:cursor-grabbing">
       <Canvas
         camera={{ position: [0, 0, 8], fov: 50 }}
         gl={{ antialias: true, alpha: true }}

@@ -9,7 +9,6 @@ import ChoiceQuiz from '@/components/quiz/ChoiceQuiz'
 import JudgeQuiz from '@/components/quiz/JudgeQuiz'
 import MatchQuiz from '@/components/quiz/MatchQuiz'
 import QuizResult from '@/components/quiz/QuizResult'
-import Terminal from '@/components/ui/Terminal'
 import { useAudio } from '@/components/ui/AudioProvider'
 import { useToast } from '@/components/ui/Toast'
 import ParticleField from '@/components/effects/ParticleField'
@@ -321,10 +320,6 @@ function QuizPageContent() {
       {submitting && (
         <div className="text-sm text-zinc-500 animate-pulse">正在提交...</div>
       )}
-
-      <div className="w-full max-w-2xl mt-4 opacity-30">
-        <Terminal />
-      </div>
     </main>
   )
 }
