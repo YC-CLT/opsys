@@ -21,9 +21,12 @@ function QuizPageContent() {
   const { toast } = useToast()
 
   const levelId = parseInt(params.id as string)
-  const { questions, loading, error, submitAnswer, mode } = useQuizData(levelId)
+  const { questions, loading, error, submitAnswer, skipQuestion, mode } = useQuizData(levelId)
 
   const [currentIndex, setCurrentIndex] = useState(0)
+
+  type QuestionStatus = 'pending' | 'correct' | 'wrong' | 'skipped'
+  const [questionsStatus, setQuestionsStatus] = useState<QuestionStatus[]>([])
 
   const [selectedAnswer, setSelectedAnswer] = useState<string | boolean | Record<string, string> | undefined>()
   const [submittedAnswer, setSubmittedAnswer] = useState<string | boolean | Record<string, string> | undefined>()
@@ -74,6 +77,7 @@ function QuizPageContent() {
         correct: prev.correct + (res.correct ? 1 : 0),
         total: prev.total + 1,
       }))
+      updateQuestionStatus(currentIndex, res.correct ? 'correct' : 'wrong')
       playSFX(res.correct ? '/audio/SUCCESS.mp3' : '/audio/FAIL.wav')
     } catch (err) {
       const message = err instanceof Error ? err.message : ''
@@ -100,6 +104,45 @@ function QuizPageContent() {
     } else {
       setCurrentIndex((prev) => prev + 1)
     }
+  }
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      setSelectedAnswer(undefined)
+      setSubmittedAnswer(undefined)
+      setResult(null)
+      setShowResult(false)
+      setCurrentIndex((prev) => prev - 1)
+    }
+  }
+
+  const handleSkip = () => {
+    if (submitting || !currentQuestion) return
+
+    const qId = currentQuestion.id
+    skipQuestion(qId)
+
+    updateQuestionStatus(currentIndex, 'skipped')
+    setScore((prev) => ({ correct: prev.correct, total: prev.total + 1 }))
+
+    setSelectedAnswer(undefined)
+    setSubmittedAnswer(undefined)
+    setResult(null)
+    setShowResult(false)
+
+    if (currentIndex + 1 >= questions.length) {
+      setFinished(true)
+    } else {
+      setCurrentIndex((prev) => prev + 1)
+    }
+  }
+
+  const updateQuestionStatus = (index: number, status: QuestionStatus) => {
+    setQuestionsStatus((prev) => {
+      const next = [...prev]
+      next[index] = status
+      return next
+    })
   }
 
   if (loading) {
@@ -148,9 +191,47 @@ function QuizPageContent() {
         </div>
       </div>
 
+      {/* Question navigator dots */}
+      <div className="w-full max-w-2xl flex items-center justify-center gap-1.5 flex-wrap">
+        {questions.map((q, idx) => {
+          const status = questionsStatus[idx]
+          const isCurrent = idx === currentIndex
+          const isVisited = idx < currentIndex
+
+          return (
+            <button
+              key={q.id}
+              onClick={() => {
+                if (idx === currentIndex) return
+                setSelectedAnswer(undefined)
+                setSubmittedAnswer(undefined)
+                setResult(null)
+                setShowResult(false)
+                setCurrentIndex(idx)
+              }}
+              className={`w-2 h-2 rounded-full transition-all duration-200 ${
+                isCurrent
+                  ? 'bg-accent w-3.5 scale-125'
+                  : status === 'correct'
+                  ? 'bg-green-500'
+                  : status === 'wrong'
+                  ? 'bg-red-500'
+                  : status === 'skipped'
+                  ? 'bg-yellow-500/60'
+                  : isVisited
+                  ? 'bg-zinc-600'
+                  : 'bg-zinc-700'
+              }`}
+              title={`第 ${idx + 1} 题${status === 'correct' ? ' (✓)' : status === 'wrong' ? ' (✗)' : status === 'skipped' ? ' (已跳过)' : ''}`}
+            />
+          )
+        })}
+      </div>
+
       <AnimatePresence mode="wait">
         {currentQuestion && !showResult && (
-          <motion.div
+          <>
+            <motion.div
             key={currentQuestion.id}
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -191,6 +272,25 @@ function QuizPageContent() {
               />
             )}
           </motion.div>
+
+          {/* Skip & navigation buttons */}
+          <div className="w-full max-w-2xl flex items-center justify-between">
+            <button
+              onClick={handlePrev}
+              disabled={currentIndex === 0}
+              className="px-4 py-2 text-sm text-zinc-400 hover:text-zinc-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+            >
+              ← 上一题
+            </button>
+            <button
+              onClick={handleSkip}
+              disabled={submitting}
+              className="px-4 py-2 text-sm text-yellow-500/70 hover:text-yellow-400 transition-colors disabled:opacity-30"
+            >
+              跳过 ▸
+            </button>
+          </div>
+        </>
         )}
       </AnimatePresence>
 

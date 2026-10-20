@@ -21,6 +21,7 @@ export interface StaticRecord {
   questionId: string
   studentAnswer: unknown
   isCorrect: boolean
+  skipped: boolean
   answeredAt: string
 }
 
@@ -37,6 +38,16 @@ export function addStaticRecord(record: StaticRecord): void {
   const records = getStaticRecords()
   records.push(record)
   localStorage.setItem(RECORDS_KEY, JSON.stringify(records))
+}
+
+export function addSkipRecord(questionId: string): void {
+  addStaticRecord({
+    questionId,
+    studentAnswer: null,
+    isCorrect: false,
+    skipped: true,
+    answeredAt: new Date().toISOString(),
+  })
 }
 
 export function hasAnswered(questionId: string): boolean {

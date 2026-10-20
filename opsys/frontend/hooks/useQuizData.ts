@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useModeDetect } from '@/hooks/useModeDetect'
 import { apiFetch } from '@/lib/api'
-import { getStoredQuestions, storeQuizQuestions, addStaticRecord, hasAnswered } from '@/lib/staticStore'
+import { getStoredQuestions, storeQuizQuestions, addStaticRecord, addSkipRecord, hasAnswered } from '@/lib/staticStore'
 import { checkAnswer, getStaticQuestions } from '@/lib/quiz-engine'
 import type { QuestionData } from '@/components/quiz/types'
 
@@ -59,6 +59,7 @@ export function useQuizData(levelId: number) {
         questionId,
         studentAnswer: answer,
         isCorrect: result.correct,
+        skipped: false,
         answeredAt: new Date().toISOString(),
       })
       return result
@@ -71,5 +72,12 @@ export function useQuizData(levelId: number) {
     })
   }
 
-  return { questions, loading, error, submitAnswer, reload: load, mode }
+  const skipQuestion = (questionId: string) => {
+    if (mode === 'static') {
+      if (hasAnswered(questionId)) return
+      addSkipRecord(questionId)
+    }
+  }
+
+  return { questions, loading, error, submitAnswer, skipQuestion, reload: load, mode }
 }
