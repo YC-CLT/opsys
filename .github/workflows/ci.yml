@@ -19,10 +19,14 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
+          cache-dependency-path: opsys/pnpm-lock.yaml
       - run: pnpm install
+        working-directory: opsys
       - run: pnpm --filter frontend lint
+        working-directory: opsys
         continue-on-error: true
       - run: pnpm --filter frontend build
+        working-directory: opsys
 
   backend-check:
     name: Backend Check
@@ -36,9 +40,13 @@ jobs:
         with:
           node-version: 20
           cache: 'pnpm'
+          cache-dependency-path: opsys/pnpm-lock.yaml
       - run: pnpm install
+        working-directory: opsys
       - run: pnpm --filter backend build
+        working-directory: opsys
       - run: pnpm --filter backend typecheck
+        working-directory: opsys
         continue-on-error: true
 
   docker-build:
