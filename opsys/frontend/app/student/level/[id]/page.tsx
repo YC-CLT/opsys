@@ -12,6 +12,8 @@ import QuizResult from '@/components/quiz/QuizResult'
 import Terminal from '@/components/ui/Terminal'
 import { useAudio } from '@/components/ui/AudioProvider'
 import { useToast } from '@/components/ui/Toast'
+import ParticleField from '@/components/effects/ParticleField'
+import type { ParticleMode } from '@/components/effects/ParticleField'
 
 function QuizPageContent() {
   const params = useParams()
@@ -36,6 +38,7 @@ function QuizPageContent() {
 
   const [score, setScore] = useState({ correct: 0, total: 0 })
   const [finished, setFinished] = useState(false)
+  const [particleMode, setParticleMode] = useState<ParticleMode>('idle')
 
   useEffect(() => {
     if (!student) {
@@ -79,6 +82,8 @@ function QuizPageContent() {
       }))
       updateQuestionStatus(currentIndex, res.correct ? 'correct' : 'wrong')
       playSFX(res.correct ? '/audio/SUCCESS.mp3' : '/audio/FAIL.wav')
+      setParticleMode(res.correct ? 'gather' : 'scatter')
+      setTimeout(() => setParticleMode('idle'), 1500)
     } catch (err) {
       const message = err instanceof Error ? err.message : ''
       if (message === '该题已作答，不可重复提交') {
@@ -130,6 +135,9 @@ function QuizPageContent() {
     setResult(null)
     setShowResult(false)
 
+    setParticleMode('shiftLeft')
+    setTimeout(() => setParticleMode('idle'), 1500)
+
     if (currentIndex + 1 >= questions.length) {
       setFinished(true)
     } else {
@@ -170,6 +178,7 @@ function QuizPageContent() {
 
   return (
     <main className="min-h-screen flex flex-col items-center px-4 py-8 gap-6">
+      <ParticleField mode={particleMode} />
       <div className="w-full max-w-2xl flex items-center justify-between">
         <button
           onClick={() => router.push('/student/dashboard')}
