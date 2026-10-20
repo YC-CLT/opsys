@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, Suspense } from 'react'
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '@/hooks/useAuth'
@@ -11,6 +11,7 @@ import MatchQuiz from '@/components/quiz/MatchQuiz'
 import QuizResult from '@/components/quiz/QuizResult'
 import { useAudio } from '@/components/ui/AudioProvider'
 import { useToast } from '@/components/ui/Toast'
+import { getStaticRecords } from '@/lib/staticStore'
 import ParticleField from '@/components/effects/ParticleField'
 import type { ParticleMode } from '@/components/effects/ParticleField'
 import TimelineScene from '@/components/scenes/TimelineScene'
@@ -39,6 +40,7 @@ function QuizPageContent() {
   const [submitting, setSubmitting] = useState(false)
 
   const [score, setScore] = useState({ correct: 0, total: 0 })
+  const prevCorrectRef = useRef(0)
   const [finished, setFinished] = useState(false)
   const [particleMode, setParticleMode] = useState<ParticleMode>('idle')
 
@@ -50,10 +52,21 @@ function QuizPageContent() {
   }, [levelId, student, authLoading])
 
   useEffect(() => {
-    if (finished) {
-      router.replace(`/student/result?level=${levelId}&correct=${score.correct}&total=${score.total}`)
+    if (questions.length > 0) {
+      const qIds = new Set(questions.map((q) => q.id))
+      const records = getStaticRecords()
+      prevCorrectRef.current = records.filter(
+        (r) => qIds.has(r.questionId) && r.isCorrect && !r.skipped
+      ).length
     }
-  }, [finished, levelId, score.correct, score.total, router])
+  }, [questions])
+
+  useEffect(() => {
+    if (finished) {
+      const totalCorrect = prevCorrectRef.current + score.correct
+      router.replace(`/student/result?level=${levelId}&correct=${totalCorrect}&total=${questions.length}`)
+    }
+  }, [finished, levelId, score.correct, questions.length, router])
 
   const currentQuestion = questions[currentIndex]
 

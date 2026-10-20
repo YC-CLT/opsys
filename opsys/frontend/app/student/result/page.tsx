@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { motion } from 'framer-motion'
 
 const LEVEL_NAMES = ['', '第一章·引论', '发展历程', '基本特性', '运行环境', '体系结构', '系统调用']
+const MAX_LEVEL = 6
 
 function ResultContent() {
   const router = useRouter()
@@ -14,6 +15,10 @@ function ResultContent() {
   const correct = parseInt(searchParams.get('correct') || '0')
   const total = parseInt(searchParams.get('total') || '0')
   const pct = total > 0 ? Math.round((correct / total) * 100) : 0
+  const passed = pct >= 60
+  const isLastLevel = levelId >= MAX_LEVEL
+
+  const emoji = isLastLevel && passed ? '🎉' : pct >= 80 ? '🌟' : pct >= 60 ? '⭐' : '📚'
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4">
@@ -24,7 +29,7 @@ function ResultContent() {
         className="card-glass p-10 max-w-lg w-full text-center space-y-6"
       >
         <div className="text-7xl">
-          {pct >= 80 ? '🌟' : pct >= 60 ? '⭐' : '📚'}
+          {emoji}
         </div>
 
         <h1 className="text-3xl font-bold glow-text">
@@ -38,31 +43,24 @@ function ResultContent() {
         </div>
 
         <p className="text-xl text-zinc-300">
-          正确率 <span className={`font-bold ${pct >= 60 ? 'text-green-400' : 'text-yellow-400'}`}>{pct}%</span>
+          正确率 <span className={`font-bold ${passed ? 'text-green-400' : 'text-yellow-400'}`}>{pct}%</span>
         </p>
 
-        {pct >= 60 ? (
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-green-400 font-medium"
-          >
-            ✅ 下一关已解锁！
-          </motion.p>
-        ) : (
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="text-yellow-400 text-sm"
-          >
-            正确率达到 60% 即可解锁下一关，再接再厉！
-          </motion.p>
-        )}
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className={`font-medium ${passed ? 'text-green-400' : 'text-yellow-400 text-sm'}`}
+        >
+          {isLastLevel && passed
+            ? '🎉 恭喜完成全部关卡！'
+            : passed
+              ? '✅ 恭喜通过本章！下一关已解锁'
+              : '正确率达到 60% 即可解锁下一关，再接再厉！'}
+        </motion.p>
 
         <div className="space-y-3 pt-4">
-          {pct >= 60 && levelId < 6 && (
+          {passed && !isLastLevel && (
             <motion.button
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
