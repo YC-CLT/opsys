@@ -50,12 +50,37 @@ jobs:
         continue-on-error: true
 
   docker-build:
-    name: Docker Build
+    name: Docker Build & Push
     runs-on: ubuntu-latest
     needs: [lint-typecheck, backend-check]
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v4
-      - name: Build backend image
-        run: docker build -f opsys/Dockerfile.backend -t opsys-backend opsys/
-      - name: Build frontend image
-        run: docker build -f opsys/Dockerfile.frontend -t opsys-frontend opsys/
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build & push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: opsys/
+          file: opsys/Dockerfile.backend
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ghcr.io/yc-clt/opsys-backend:latest
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.description=OPSys backend service
+      - name: Build & push frontend image
+        uses: docker/build-push-action@v6
+        with:
+          context: opsys/
+          file: opsys/Dockerfile.frontend
+          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          tags: ghcr.io/yc-clt/opsys-frontend:latest
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.description=OPSys frontend Next.js app
