@@ -66,7 +66,7 @@ export function TerminalProvider({ children }: { children: React.ReactNode }) {
 function TerminalOverlay() {
   const { isOpen, close } = useTerminal()
   const router = useRouter()
-  const { student } = useAuth()
+  const { student, loginStudent, logout: authLogout } = useAuth()
   const { mode } = useModeDetect()
 
   const [lines, setLines] = useState<string[]>(['os-challenge@kernel:~$ '])
@@ -130,16 +130,30 @@ function TerminalOverlay() {
       return
     }
 
-    if (result.action === 'login') {
-      addOutput('Terminal login: use the /student page to login.')
+    if (result.action === 'login' && result.actionPayload) {
+      try {
+        const payload = JSON.parse(result.actionPayload) as { studentId: string; name: string }
+        loginStudent(payload.studentId, payload.name)
+        addOutput(`Login successful! Welcome, ${payload.name}.`)
+        addOutput('Redirecting to dashboard...')
+        addOutput('os-challenge@kernel:~$ ')
+        return
+      } catch {
+        addOutput('login: failed to parse credentials')
+        addOutput('os-challenge@kernel:~$ ')
+        return
+      }
     }
 
     if (result.action === 'logout') {
-      addOutput('Terminal logout: use the dashboard logout button.')
+      authLogout()
+      addOutput('Logged out.')
+      addOutput('os-challenge@kernel:~$ ')
+      return
     }
 
     addOutput('os-challenge@kernel:~$ ')
-  }, [addOutput, mode, student, router, close])
+  }, [addOutput, mode, student, router, close, loginStudent, authLogout])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {

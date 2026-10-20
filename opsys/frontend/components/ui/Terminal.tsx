@@ -40,7 +40,7 @@ interface TerminalProps {
 export default function Terminal({ onEnterLevel, userName, studentId }: TerminalProps) {
   const router = useRouter()
   const { playSFX } = useAudio()
-  const { student } = useAuth()
+  const { student, loginStudent, logout: authLogout } = useAuth()
   const { mode } = useModeDetect()
   const [bootPhase, setBootPhase] = useState<'booting' | 'ready'>('booting')
   const [bootIndex, setBootIndex] = useState(0)
@@ -127,8 +127,30 @@ export default function Terminal({ onEnterLevel, userName, studentId }: Terminal
       return
     }
 
+    if (result.action === 'login' && result.actionPayload) {
+      try {
+        const payload = JSON.parse(result.actionPayload) as { studentId: string; name: string }
+        loginStudent(payload.studentId, payload.name)
+        addLine('output', `Login successful! Welcome, ${payload.name}.`)
+        addLine('output', 'Redirecting to dashboard...')
+        addLine('output', 'os-challenge@kernel:~$ ')
+        return
+      } catch {
+        addLine('error', 'login: failed to parse credentials')
+        addLine('output', 'os-challenge@kernel:~$ ')
+        return
+      }
+    }
+
+    if (result.action === 'logout') {
+      authLogout()
+      addLine('output', 'Logged out.')
+      addLine('output', 'os-challenge@kernel:~$ ')
+      return
+    }
+
     addLine('output', 'os-challenge@kernel:~$ ')
-  }, [addLine, mode, student, userName, studentId, onEnterLevel, router])
+  }, [addLine, mode, student, userName, studentId, onEnterLevel, router, loginStudent, authLogout])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {

@@ -94,10 +94,19 @@ export function executeCommand(input: string, context: CommandContext): Terminal
     }
   }
 
-  if (/^login\s+\d{12}\s+.+$/i.test(trimmed)) {
+  if (lower === 'login' || lower.startsWith('login ')) {
+    if (lower === 'login') {
+      return { outputLines: ['Usage: login <studentId> <name>'] }
+    }
     const parts = trimmed.split(/\s+/)
+    if (parts.length < 3) {
+      return { outputLines: ['Usage: login <studentId> <name>'] }
+    }
     const id = parts[1]
     const name = parts.slice(2).join(' ')
+    if (!/^\d{12}$/.test(id)) {
+      return { outputLines: ['login: studentId must be 12 digits'] }
+    }
     if (name.length > 50) {
       return { outputLines: ['login: name too long (max 50 chars)'] }
     }
