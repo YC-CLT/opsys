@@ -11,12 +11,14 @@ import MatchQuiz from '@/components/quiz/MatchQuiz'
 import QuizResult from '@/components/quiz/QuizResult'
 import Terminal from '@/components/ui/Terminal'
 import { useAudio } from '@/components/ui/AudioProvider'
+import { useToast } from '@/components/ui/Toast'
 
 function QuizPageContent() {
   const params = useParams()
   const router = useRouter()
   const { student } = useAuth()
   const { playSFX, playBGM } = useAudio()
+  const { toast } = useToast()
 
   const levelId = parseInt(params.id as string)
   const { questions, loading, error, submitAnswer, mode } = useQuizData(levelId)
@@ -59,7 +61,7 @@ function QuizPageContent() {
       const res = await submitAnswer(currentQuestion.id, answer, token)
 
       if ('error' in res && res.error === 'already_answered') {
-        alert('该题已作答，即将跳转下一题')
+        toast.warn('该题已作答')
         setSubmitting(false)
         handleNext()
         return
@@ -76,7 +78,7 @@ function QuizPageContent() {
     } catch (err) {
       const message = err instanceof Error ? err.message : ''
       if (message === '该题已作答，不可重复提交') {
-        alert('该题已作答，即将跳转下一题')
+        toast.warn('该题已作答')
         setSubmitting(false)
         handleNext()
         return
